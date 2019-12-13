@@ -9,6 +9,11 @@ import java.util.Objects;
 
 public class CategoryUtils {
 
+    /**
+     * Map a JSON Document to Category entity
+     * @param document
+     * @return Category
+     */
     public static Category documentToEntity(Document document) {
         Objects.requireNonNull(document);
         return Category.builder()
@@ -27,7 +32,7 @@ public class CategoryUtils {
      * @param leafId
      * @return
      */
-    public static List<Category> sortListByFieldReference(List<Category> categories, Deque<Category> accumulator, String leafId) {
+    public static List<Category> sortCategoryListByFieldReference(List<Category> categories, Deque<Category> accumulator, String leafId) {
         Objects.requireNonNull(categories);
         Objects.requireNonNull(accumulator);
         Objects.requireNonNull(leafId);
@@ -47,7 +52,7 @@ public class CategoryUtils {
             return List.of(accumulator.toArray(new Category[]{}));
         }
 
-        sortListByFieldReference(categories, accumulator, parentId);
+        sortCategoryListByFieldReference(categories, accumulator, parentId);
 
         return List.of(accumulator.toArray(new Category[]{}));
     }

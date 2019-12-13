@@ -1,8 +1,11 @@
 package com.daswort.core.service.song;
 
+import com.daswort.core.entity.Song;
 import com.daswort.core.repository.SongRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SongSearchService {
@@ -16,6 +19,9 @@ public class SongSearchService {
         this.songRepository = songRepository;
     }
 
+    public Optional<Song> findSongById(String songId) {
+        return songRepository.findById(songId);
+    }
 
 
 }

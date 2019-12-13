@@ -53,7 +53,7 @@ public class CategoryService {
             List<Category> categoryList = treePath.stream().map(CategoryUtils::documentToEntity).collect(toList());
             categoryList.add(targetCategory);
 
-            return CategoryUtils.sortListByFieldReference(categoryList, new ArrayDeque<>(), targetCategory.getId());
+            return CategoryUtils.sortCategoryListByFieldReference(categoryList, new ArrayDeque<>(), targetCategory.getId());
 
         }
         return Collections.emptyList();
