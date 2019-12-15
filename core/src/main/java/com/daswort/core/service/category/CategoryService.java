@@ -1,6 +1,7 @@
 package com.daswort.core.service.category;
 
 import com.daswort.core.entity.Category;
+import com.daswort.core.repository.CategoryRepository;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -8,7 +9,6 @@ import org.springframework.data.mongodb.core.aggregation.GraphLookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -20,13 +20,19 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class CategoryService {
 
+    private final CategoryRepository categoryRepository;
     private final MongoOperations mongoOperations;
 
-    public CategoryService(MongoOperations mongoOperations) {
+    public CategoryService(CategoryRepository categoryRepository, MongoOperations mongoOperations) {
+        this.categoryRepository = categoryRepository;
         this.mongoOperations = mongoOperations;
     }
 
-    @Transactional
+
+    public List<Category> findChildrenCategories(String categoryId) {
+        return categoryRepository.findCategoriesByParentId(categoryId);
+    }
+
     public List<Category> computeCategoryTreePath(String categoryId) {
         Objects.requireNonNull(categoryId);
 
