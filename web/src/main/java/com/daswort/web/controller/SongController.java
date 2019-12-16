@@ -63,4 +63,11 @@ public class SongController {
         return ResponseEntity.ok(new Song());
     }
 
+    @DeleteMapping("/{songId}")
+    public ResponseEntity<?> deleteSong(@PathVariable String songId) {
+        songUpdateService.removeSong(songId);
+        return ResponseEntity.ok().build();
+
+    }
+
 }

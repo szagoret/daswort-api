@@ -69,4 +69,7 @@ public class SongUpdateService {
     }
 
 
+    public void removeSong(String songId) {
+        songRepository.deleteById(songId);
+    }
 }
