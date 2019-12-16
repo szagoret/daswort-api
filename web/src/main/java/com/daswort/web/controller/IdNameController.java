@@ -6,7 +6,7 @@ import com.daswort.core.service.idname.IdNameService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/")
+@RestController("/filter")
 public class IdNameController {
 
     private final IdNameService idNameService;

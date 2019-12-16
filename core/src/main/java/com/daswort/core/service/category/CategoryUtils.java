@@ -1,6 +1,7 @@
 package com.daswort.core.service.category;
 
 import com.daswort.core.entity.Category;
+import com.daswort.core.exception.CategoryNotFoundException;
 import org.bson.Document;
 
 import java.util.Deque;
@@ -11,6 +12,7 @@ public class CategoryUtils {
 
     /**
      * Map a JSON Document to Category entity
+     *
      * @param document
      * @return Category
      */
@@ -41,7 +43,7 @@ public class CategoryUtils {
         Category nextCategory = categories.stream()
                 .filter(category -> Objects.equals(leafId, category.getId()))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(CategoryNotFoundException::new);
 
         // add element to path
         accumulator.addFirst(nextCategory);

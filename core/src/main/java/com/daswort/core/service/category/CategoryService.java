@@ -10,10 +10,7 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,6 +25,9 @@ public class CategoryService {
         this.mongoOperations = mongoOperations;
     }
 
+    public Optional<Category> findById(String categoryId) {
+        return categoryRepository.findById(categoryId);
+    }
 
     public List<Category> findChildrenCategories(String categoryId) {
         return categoryRepository.findCategoriesByParentId(categoryId);

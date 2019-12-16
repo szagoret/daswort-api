@@ -22,6 +22,6 @@ public class FileStorageService {
 
     @Transactional
     public Song getSong() {
-        return songRepository.findById("5de72c5039674311328cb734").orElse(Song.builder().build());
+        return songRepository.findById("5de72c5039674311328cb734").orElse(new Song());
     }
 }
