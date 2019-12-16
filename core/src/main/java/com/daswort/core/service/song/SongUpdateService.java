@@ -9,6 +9,8 @@ import com.daswort.core.service.idname.IdNameService;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 import static com.daswort.core.service.IdNameCollection.*;
 import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -39,6 +41,8 @@ public class SongUpdateService {
     }
 
     public Song updateSong(SongUpdate updatedSong, String songId) {
+        Objects.requireNonNull(updatedSong);
+        Objects.requireNonNull(songId);
 
         final var song = songSearchService.findSongById(songId).orElseThrow(SongNotFoundException::new);
 
