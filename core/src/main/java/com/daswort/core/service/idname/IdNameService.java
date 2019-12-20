@@ -1,7 +1,7 @@
 package com.daswort.core.service.idname;
 
 import com.daswort.core.entity.IdName;
-import com.daswort.core.service.IdNameCollection;
+import com.daswort.core.entity.IdNameCollection;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 

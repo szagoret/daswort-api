@@ -1,17 +1,22 @@
 package com.daswort.core.service.song;
 
+import com.daswort.core.entity.File;
 import com.daswort.core.entity.Song;
 import com.daswort.core.exception.SongNotFoundException;
+import com.daswort.core.model.SongUpdate;
 import com.daswort.core.repository.AuthorRepository;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
+import com.daswort.core.storage.FileResource;
+import com.daswort.core.utils.FileUtils;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
-import static com.daswort.core.service.IdNameCollection.*;
+import static com.daswort.core.entity.IdNameCollection.*;
+import static java.util.Objects.requireNonNull;
 import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -25,24 +30,26 @@ public class SongUpdateService {
     private final CategoryService categoryService;
     private final IdNameService idNameService;
     private final AuthorRepository authorRepository;
+    private final SongFileService songFileService;
 
     public SongUpdateService(MongoOperations mongoOperations,
                              SongRepository songRepository,
                              SongSearchService songSearchService,
                              CategoryService categoryService,
                              IdNameService idNameService,
-                             AuthorRepository authorRepository) {
+                             AuthorRepository authorRepository, SongFileService songFileService) {
         this.mongoOperations = mongoOperations;
         this.songRepository = songRepository;
         this.songSearchService = songSearchService;
         this.categoryService = categoryService;
         this.idNameService = idNameService;
         this.authorRepository = authorRepository;
+        this.songFileService = songFileService;
     }
 
     public Song updateSong(SongUpdate updatedSong, String songId) {
-        Objects.requireNonNull(updatedSong);
-        Objects.requireNonNull(songId);
+        requireNonNull(updatedSong);
+        requireNonNull(songId);
 
         final var song = songSearchService.findSongById(songId).orElseThrow(SongNotFoundException::new);
 
@@ -75,5 +82,28 @@ public class SongUpdateService {
 
     public void removeSong(String songId) {
         songRepository.deleteById(songId);
+    }
+
+    public File addSongFile(String songId, FileResource fileResource) {
+        requireNonNull(songId);
+        requireNonNull(fileResource);
+        final var fileCode = songFileService.saveSongFile(songId, fileResource);
+        final var file = File.builder()
+                .name(fileResource.getName())
+                .fileCode(fileCode)
+                .extension(FileUtils.getFileExtension(fileResource.getName()))
+                .size(fileResource.getContentLength())
+                .build();
+
+        final var query = new Query(where("id").is(songId));
+        final var update = new Update().push("files", file);
+
+        mongoOperations.findAndModify(query, update, Song.class);
+
+        return file;
+    }
+
+    public void removeSongFile(String songId, String songFileCode) {
+
     }
 }

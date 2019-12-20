@@ -27,6 +27,7 @@
     <properties>
         <java.version>11</java.version>
         <lombok.version>1.18.10</lombok.version>
+        <aws-sdk.version>2.9.16</aws-sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -47,6 +48,13 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws-sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

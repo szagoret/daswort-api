@@ -2,3 +2,11 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/daswort}
+
+
+daswort:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME:daswort-files}
+      region: eu-central-1
+      endpoint: http://localhost:5001

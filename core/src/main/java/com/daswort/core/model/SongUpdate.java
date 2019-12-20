@@ -1,4 +1,4 @@
-package com.daswort.core.service.song;
+package com.daswort.core.model;
 
 import lombok.Builder;
 import lombok.Setter;

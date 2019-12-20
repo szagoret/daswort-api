@@ -1,4 +1,4 @@
-package com.daswort.core.service;
+package com.daswort.core.entity;
 
 public enum IdNameCollection {
     composition,

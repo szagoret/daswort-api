@@ -1,7 +1,7 @@
 package com.daswort.web.controller;
 
 import com.daswort.core.entity.IdName;
-import com.daswort.core.service.IdNameCollection;
+import com.daswort.core.entity.IdNameCollection;
 import com.daswort.core.service.idname.IdNameService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

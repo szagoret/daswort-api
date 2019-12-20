@@ -1,4 +1,4 @@
-package com.daswort.core;
+package com.daswort.core.configuration;
 
 import com.daswort.core.entity.Song;
 import lombok.extern.slf4j.Slf4j;
