@@ -16,7 +16,8 @@ public class SongFileService {
     private final FileStorageService fileStorageService;
     private final SongFileLocationResolver songFileLocationResolver;
 
-    public SongFileService(FileStorageService fileStorageService, SongFileLocationResolver songFileLocationResolver) {
+    public SongFileService(FileStorageService fileStorageService,
+                           SongFileLocationResolver songFileLocationResolver) {
         this.fileStorageService = fileStorageService;
         this.songFileLocationResolver = songFileLocationResolver;
     }

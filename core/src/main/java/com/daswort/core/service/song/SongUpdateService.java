@@ -10,10 +10,13 @@ import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.storage.FileResource;
 import com.daswort.core.utils.FileUtils;
+import com.mongodb.QueryBuilder;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 import static com.daswort.core.entity.IdNameCollection.*;
 import static java.util.Objects.requireNonNull;
@@ -81,13 +84,16 @@ public class SongUpdateService {
 
 
     public void removeSong(String songId) {
+        final var files = songRepository.findById(songId).map(Song::getFiles).orElse(Collections.emptyList());
+        files.forEach(file -> songFileService.removeSongFile(songId, file.getFileCode()));
         songRepository.deleteById(songId);
     }
 
     public File addSongFile(String songId, FileResource fileResource) {
         requireNonNull(songId);
         requireNonNull(fileResource);
-        final var fileCode = songFileService.saveSongFile(songId, fileResource);
+        final var foundSong = songRepository.findById(songId).orElseThrow(SongNotFoundException::new);
+        final var fileCode = songFileService.saveSongFile(foundSong.getId(), fileResource);
         final var file = File.builder()
                 .name(fileResource.getName())
                 .fileCode(fileCode)
@@ -95,15 +101,19 @@ public class SongUpdateService {
                 .size(fileResource.getContentLength())
                 .build();
 
-        final var query = new Query(where("id").is(songId));
+        final var query = new Query(where("id").is(foundSong.getId()));
         final var update = new Update().push("files", file);
 
         mongoOperations.findAndModify(query, update, Song.class);
-
         return file;
     }
 
-    public void removeSongFile(String songId, String songFileCode) {
+    public void removeSongFile(String songId, String fileCode) {
+        final var removeElement = new Update().pull("files", QueryBuilder.start("fileCode").is(fileCode).get());
+        mongoOperations.update(Song.class)
+                .matching(query(where("id").is(songId)))
+                .apply(removeElement).first();
 
+        songFileService.removeSongFile(songId, fileCode);
     }
 }

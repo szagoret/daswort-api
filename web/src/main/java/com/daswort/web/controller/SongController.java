@@ -106,7 +106,13 @@ public class SongController {
     public ResponseEntity<?> deleteSong(@PathVariable String songId) {
         songUpdateService.removeSong(songId);
         return ResponseEntity.ok().build();
+    }
 
+    @DeleteMapping("/{songId}/files/{fileCode}")
+    public ResponseEntity<?> deleteSongFile(@PathVariable String songId,
+                                            @PathVariable String fileCode) {
+        songUpdateService.removeSongFile(songId, fileCode);
+        return ResponseEntity.ok().build();
     }
 
 }
