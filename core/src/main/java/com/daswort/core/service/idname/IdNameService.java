@@ -31,4 +31,10 @@ public class IdNameService {
         Objects.requireNonNull(ids);
         return mongoOperations.find(query(where("id").in(ids)), IdName.class, collection.name());
     }
+
+    public void removeIdNameItem(IdNameCollection collection, String id) {
+        Objects.requireNonNull(collection);
+        Objects.requireNonNull(id);
+        mongoOperations.remove(query(where("_id").is(id)), collection.getName());
+    }
 }

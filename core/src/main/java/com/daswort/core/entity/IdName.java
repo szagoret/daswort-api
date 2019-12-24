@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @Builder
 @Document
 public class IdName {
-    @MongoId(FieldType.OBJECT_ID)
+//    @MongoId(FieldType.OBJECT_ID)
     private String id;
     private String name;
 }

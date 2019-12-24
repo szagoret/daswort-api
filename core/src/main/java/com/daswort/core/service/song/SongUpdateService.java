@@ -1,6 +1,8 @@
 package com.daswort.core.service.song;
 
 import com.daswort.core.entity.File;
+import com.daswort.core.entity.IdName;
+import com.daswort.core.entity.IdNameCollection;
 import com.daswort.core.entity.Song;
 import com.daswort.core.exception.SongNotFoundException;
 import com.daswort.core.model.SongUpdate;
@@ -10,6 +12,7 @@ import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.storage.FileResource;
 import com.daswort.core.utils.FileUtils;
+import com.daswort.core.utils.IdNameSongUtils;
 import com.mongodb.QueryBuilder;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.daswort.core.entity.IdNameCollection.*;
 import static java.util.Objects.requireNonNull;
@@ -116,4 +120,31 @@ public class SongUpdateService {
 
         songFileService.removeSongFile(songId, fileCode);
     }
+
+    public void removeSongIdNameField(String fieldName) {
+        requireNonNull(fieldName);
+        final var updateOperation = new Update().unset(fieldName);
+        mongoOperations.update(Song.class).apply(updateOperation).all();
+    }
+
+    public void removeSongIdNameArrayItem(String fieldName, String itemId) {
+        requireNonNull(fieldName, itemId);
+        final var removeElementOperation = new Update().pull(fieldName, QueryBuilder.start("id").is(itemId).get());
+        mongoOperations.update(Song.class).apply(removeElementOperation).all();
+    }
+
+    public void removeSongField(IdNameCollection collection, String fieldItemId) {
+        requireNonNull(collection);
+        requireNonNull(fieldItemId);
+        String fieldName = IdNameSongUtils.getFieldName(collection).orElseThrow();
+        Class<?> fieldType = IdNameSongUtils.getFieldType(collection).orElseThrow();
+        if (fieldType.isAssignableFrom(List.class)) {
+            removeSongIdNameArrayItem(fieldName, fieldItemId);
+        } else if (fieldType.isAssignableFrom(IdName.class)) {
+            removeSongIdNameField(fieldName);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
 }
