@@ -2,10 +2,8 @@ package com.daswort.web.controller;
 
 import com.daswort.core.entity.Category;
 import com.daswort.core.service.category.CategoryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,9 +17,29 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/children")
     public List<Category> getChildrenCategories(@RequestParam(required = false) String categoryId) {
         return categoryService.findChildrenCategories(categoryId);
+    }
+
+    @PostMapping
+    public ResponseEntity<Category> addCategory(@RequestBody Category addCategory) {
+        final var category = categoryService.createCategory(addCategory);
+        return ResponseEntity.ok(category);
+    }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<Category> updateCategory(@RequestBody Category updateCategory,
+                                                   @PathVariable String categoryId) {
+        final var category = categoryService.updateCategory(updateCategory, categoryId);
+        return ResponseEntity.ok(category);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable String categoryId) {
+        categoryService.deleteCategory(categoryId);
+
+        return ResponseEntity.ok().build();
     }
 
 

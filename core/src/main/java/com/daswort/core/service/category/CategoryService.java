@@ -1,18 +1,28 @@
 package com.daswort.core.service.category;
 
 import com.daswort.core.entity.Category;
+import com.daswort.core.entity.Song;
+import com.daswort.core.exception.CategoryNotFoundException;
+import com.daswort.core.exception.CategoryReferenceException;
 import com.daswort.core.repository.CategoryRepository;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.GraphLookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class CategoryService {
@@ -26,6 +36,7 @@ public class CategoryService {
     }
 
     public Optional<Category> findById(String categoryId) {
+        requireNonNull(categoryId);
         return categoryRepository.findById(categoryId);
     }
 
@@ -34,9 +45,9 @@ public class CategoryService {
     }
 
     public List<Category> computeCategoryTreePath(String categoryId) {
-        Objects.requireNonNull(categoryId);
+        requireNonNull(categoryId);
 
-        MatchOperation filter = Aggregation.match(Criteria.where("_id").is(categoryId));
+        MatchOperation filter = Aggregation.match(where("_id").is(categoryId));
 
         GraphLookupOperation graphLookupOperation = GraphLookupOperation.builder()
                 .from("category")
@@ -66,4 +77,45 @@ public class CategoryService {
     }
 
 
+    public Category updateCategory(Category updateCategory, String categoryId) {
+        requireNonNull(updateCategory);
+        requireNonNull(categoryId);
+        final var category = categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+
+        // check if parent id is a valid reference
+        Optional<Category> parentCategory = ofNullable(updateCategory.getParentId())
+                .flatMap(categoryRepository::findById);
+        if (parentCategory.isPresent()) {
+            parentCategory.map(Category::getId).ifPresent(category::setParentId);
+        } else if (updateCategory.getParentId() == null) {
+            category.setParentId(null);
+        } else {
+            throw new CategoryReferenceException();
+        }
+
+        ofNullable(updateCategory.getName()).ifPresent(category::setName);
+
+        return mongoOperations.update(Category.class)
+                .matching(query(where("id").is(category.getId())))
+                .replaceWith(category)
+                .withOptions(options().upsert().returnNew())
+                .as(Category.class)
+                .findAndReplaceValue();
+    }
+
+    public Category createCategory(Category createCategory) {
+        requireNonNull(createCategory);
+        final var category = categoryRepository.save(new Category());
+        return updateCategory(createCategory, category.getId());
+    }
+
+    public void deleteCategory(String categoryId) {
+        requireNonNull(categoryId);
+        final var existsCategoryReferences = mongoOperations.exists(query(where("category._id").is(categoryId)), Song.class);
+        if (existsCategoryReferences) {
+            throw new CategoryReferenceException();
+        } else {
+            categoryRepository.deleteById(categoryId);
+        }
+    }
 }
