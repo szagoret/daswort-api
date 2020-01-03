@@ -21,12 +21,16 @@ public enum IdNameCollection {
         return name;
     }
 
-    public static class Constants {
+    public static final class Constants {
         public static final String composition = "composition";
         public static final String difficulty = "difficulty";
         public static final String instrument = "instrument";
         public static final String partition = "partition";
         public static final String tag = "tag";
         public static final String topic = "topic";
+
+        private Constants() {
+            // restrict instantiation
+        }
     }
 }
