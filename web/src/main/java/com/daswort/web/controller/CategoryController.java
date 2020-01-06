@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -17,29 +19,45 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<?> getCategoryById(@PathVariable String categoryId) {
+        return ok(categoryService.findById(categoryId));
+    }
+
     @GetMapping("/children")
     public List<Category> getChildrenCategories(@RequestParam(required = false) String categoryId) {
         return categoryService.findChildrenCategories(categoryId);
     }
 
+    @GetMapping("/{categoryId}/parent")
+    public ResponseEntity<?> getParentCategory(@PathVariable String categoryId) {
+        final var parentCategory = categoryService.getParentCategory(categoryId);
+        return ok(parentCategory);
+    }
+
+    @GetMapping("/{categoryId}/parent/tree")
+    public List<Category> getCategoriesParentTree(@PathVariable String categoryId) {
+        return categoryService.getCategoryParentTreePath(categoryId);
+    }
+
     @PostMapping
     public ResponseEntity<Category> addCategory(@RequestBody Category addCategory) {
         final var category = categoryService.createCategory(addCategory);
-        return ResponseEntity.ok(category);
+        return ok(category);
     }
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@RequestBody Category updateCategory,
                                                    @PathVariable String categoryId) {
         final var category = categoryService.updateCategory(updateCategory, categoryId);
-        return ResponseEntity.ok(category);
+        return ok(category);
     }
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<?> deleteCategory(@PathVariable String categoryId) {
         categoryService.deleteCategory(categoryId);
 
-        return ResponseEntity.ok().build();
+        return ok().build();
     }
 
 

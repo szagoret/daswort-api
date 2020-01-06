@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.daswort.core.entity.IdNameCollection.*;
+import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -131,6 +132,38 @@ public class SongUpdateService {
         requireNonNull(fieldName, itemId);
         final var removeElementOperation = new Update().pull(fieldName, QueryBuilder.start("id").is(itemId).get());
         mongoOperations.update(Song.class).apply(removeElementOperation).all();
+    }
+
+    public void updateSongIdNameField(String fieldName, IdName updateObject) {
+        requireNonNull(fieldName);
+        requireNonNull(updateObject);
+        final var update = new Update().set(fieldName, updateObject);
+        mongoOperations.update(Song.class)
+                .apply(update)
+                .all();
+    }
+
+    public void updateSongIdNameArrayItem(String fieldName, IdName updateObject) {
+        requireNonNull(fieldName);
+        requireNonNull(updateObject);
+
+        final var update = new Update().set(join(".", fieldName, "$"), updateObject);
+        mongoOperations.updateMulti(query(where(join(".", fieldName, "_id")).is(updateObject.getId())), update, Song.class);
+    }
+
+    public void updateSongField(IdNameCollection collection, IdName updateObject) {
+        requireNonNull(collection);
+        requireNonNull(updateObject);
+        String fieldName = IdNameSongUtils.getFieldName(collection).orElseThrow();
+        Class<?> fieldType = IdNameSongUtils.getFieldType(collection).orElseThrow();
+        if (fieldType.isAssignableFrom(List.class)) {
+            updateSongIdNameArrayItem(fieldName, updateObject);
+        } else if (fieldType.isAssignableFrom(IdName.class)) {
+            updateSongIdNameField(fieldName, updateObject);
+        } else {
+            throw new IllegalArgumentException();
+        }
+
     }
 
     public void removeSongField(IdNameCollection collection, String fieldItemId) {

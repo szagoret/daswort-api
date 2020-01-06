@@ -7,6 +7,8 @@ import com.daswort.core.service.song.SongUpdateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/filter")
 public class IdNameController {
@@ -26,13 +28,21 @@ public class IdNameController {
         return idNameService.getById(collection, itemId);
     }
 
+    @PutMapping("/{collection}/{itemId}")
+    public ResponseEntity<IdName> updateIdName(@PathVariable IdNameCollection collection,
+                                               @PathVariable String itemId,
+                                               @RequestBody IdName updateIdName) {
+        final var idName = idNameService.updateIdName(collection, itemId, updateIdName);
+        songUpdateService.updateSongField(collection, idName);
+        return ok(idName);
+    }
+
     @DeleteMapping("/{collection}/{itemId}")
     public ResponseEntity<?> removeItem(@PathVariable IdNameCollection collection,
                                         @PathVariable String itemId) {
 
         songUpdateService.removeSongField(collection, itemId);
         idNameService.removeIdNameItem(collection, itemId);
-
-        return ResponseEntity.ok().build();
+        return ok().build();
     }
 }

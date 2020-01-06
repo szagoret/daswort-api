@@ -2,7 +2,9 @@ package com.daswort.core.service.idname;
 
 import com.daswort.core.entity.IdName;
 import com.daswort.core.entity.IdNameCollection;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +38,16 @@ public class IdNameService {
         Objects.requireNonNull(collection);
         Objects.requireNonNull(id);
         mongoOperations.remove(query(where("_id").is(id)), collection.getName());
+    }
+
+    public IdName updateIdName(IdNameCollection collection, String itemId, IdName updateIdName) {
+        Objects.requireNonNull(collection);
+        Objects.requireNonNull(itemId);
+        Objects.requireNonNull(updateIdName);
+
+        final var update = new Update().set("name", updateIdName.getName());
+        final var options = FindAndModifyOptions.options().returnNew(true);
+
+        return mongoOperations.findAndModify(query(where("_id").is(itemId)), update, options, IdName.class, collection.getName());
     }
 }

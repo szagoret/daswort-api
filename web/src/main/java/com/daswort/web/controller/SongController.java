@@ -50,10 +50,11 @@ public class SongController {
     @GetMapping("/find")
     public List<SongSearchSuggestion> findSongsByName(@RequestParam(defaultValue = "") String searchTerm) {
         List<Song> songsByName = songSearchService.findSongsByName(searchTerm);
-        return songsByName.stream().map(song -> SongSearchSuggestion.builder()
-                .song(song)
-                .breadcrumb(buildBreadcrumb(categoryService.computeCategoryTreePath(song.getCategory().getId())))
-                .build()
+        return songsByName.stream().map(song ->
+                SongSearchSuggestion.builder()
+                        .song(song)
+                        .breadcrumb(buildBreadcrumb(categoryService.getCategoryParentTreePath(song.getCategory().getId())))
+                        .build()
         ).collect(toList());
     }
 

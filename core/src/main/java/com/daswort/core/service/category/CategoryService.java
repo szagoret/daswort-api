@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.GraphLookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
@@ -44,7 +45,14 @@ public class CategoryService {
         return categoryRepository.findCategoriesByParentId(categoryId);
     }
 
-    public List<Category> computeCategoryTreePath(String categoryId) {
+    public Optional<Category> getParentCategory(String categoryId) {
+        requireNonNull(categoryId);
+        return categoryRepository.findById(categoryId)
+                .map(Category::getParentId)
+                .flatMap(categoryRepository::findById);
+    }
+
+    public List<Category> getCategoryParentTreePath(String categoryId) {
         requireNonNull(categoryId);
 
         MatchOperation filter = Aggregation.match(where("_id").is(categoryId));
@@ -95,12 +103,19 @@ public class CategoryService {
 
         ofNullable(updateCategory.getName()).ifPresent(category::setName);
 
-        return mongoOperations.update(Category.class)
+        mongoOperations.update(Category.class)
                 .matching(query(where("id").is(category.getId())))
                 .replaceWith(category)
                 .withOptions(options().upsert().returnNew())
                 .as(Category.class)
                 .findAndReplaceValue();
+
+        mongoOperations.update(Song.class)
+                .matching(query(where("category._id").is(category.getId())))
+                .apply(new Update().set("category", category))
+                .all();
+
+        return category;
     }
 
     public Category createCategory(Category createCategory) {

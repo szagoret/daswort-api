@@ -23,7 +23,7 @@ public class AppController {
 
     @GetMapping("/breadcrumb/{categoryId}")
     public Breadcrumb getBreadcrumb(@PathVariable String categoryId) {
-        return buildBreadcrumb(categoryService.computeCategoryTreePath(categoryId));
+        return buildBreadcrumb(categoryService.getCategoryParentTreePath(categoryId));
     }
 
 }
