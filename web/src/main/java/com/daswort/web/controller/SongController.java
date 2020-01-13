@@ -2,6 +2,7 @@ package com.daswort.web.controller;
 
 import com.daswort.core.entity.File;
 import com.daswort.core.entity.Song;
+import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongUpdate;
 import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.song.SongFileService;
@@ -9,7 +10,9 @@ import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.storage.FileResourceBytes;
 import com.daswort.web.dto.song.SongSearchSuggestion;
+import com.daswort.web.util.ContentDispositionBuilder;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -114,6 +117,12 @@ public class SongController {
                                             @PathVariable String fileCode) {
         songUpdateService.removeSongFile(songId, fileCode);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> advancedSearch(@RequestBody SongSearch songSearch, Pageable pageable) {
+        final var songs = songSearchService.advancedSearch(songSearch, pageable);
+        return ResponseEntity.ok(songs);
     }
 
 }

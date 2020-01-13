@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -40,6 +41,8 @@ public class Song {
     private IdName difficulty;
 
     private LocalDate writtenOn;
+
+    private LocalDateTime addedOn;
 
     @CollectionName(IdNameCollection.Constants.topic)
     private List<IdName> topics;

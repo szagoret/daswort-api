@@ -1,4 +1,4 @@
-package com.daswort.web.controller;
+package com.daswort.web.util;
 
 import lombok.Builder;
 import lombok.Data;

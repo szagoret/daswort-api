@@ -2,12 +2,16 @@ package com.daswort.core.service.song;
 
 import com.daswort.core.entity.File;
 import com.daswort.core.entity.Song;
+import com.daswort.core.model.SongSearch;
 import com.daswort.core.repository.SongRepository;
+import com.daswort.core.specification.SongSearchSpecification;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.ReplaceRootOperation;
 import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
@@ -26,11 +30,14 @@ public class SongSearchService {
 
     private final MongoOperations mongoOperations;
     private final SongRepository songRepository;
+    private final SongSearchSpecification songSearchSpecification;
 
     public SongSearchService(MongoOperations mongoOperations,
-                             SongRepository songRepository) {
+                             SongRepository songRepository,
+                             SongSearchSpecification songSearchSpecification) {
         this.mongoOperations = mongoOperations;
         this.songRepository = songRepository;
+        this.songSearchSpecification = songSearchSpecification;
     }
 
     public Optional<Song> findSongById(String songId) {
@@ -60,4 +67,10 @@ public class SongSearchService {
         return mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getUniqueMappedResult();
     }
 
+
+    public List<Song> advancedSearch(SongSearch songSearch, Pageable pageable) {
+        final Query query = new Query(songSearchSpecification.toCriteriaDefinition(songSearch))
+                .with(pageable);
+        return mongoOperations.find(query, Song.class);
+    }
 }
