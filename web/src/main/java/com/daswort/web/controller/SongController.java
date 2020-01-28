@@ -22,10 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static com.daswort.web.dto.breadcrumb.BreadcrumbBuilder.buildBreadcrumb;
+import static com.daswort.web.builder.SongPathBuilder.buildPath;
+import static com.daswort.web.mapper.SongDtoMapper.toSongDto;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/song")
 public class SongController {
@@ -53,12 +55,12 @@ public class SongController {
     @GetMapping("/find")
     public List<SongSearchSuggestion> findSongsByName(@RequestParam(defaultValue = "") String searchTerm) {
         List<Song> songsByName = songSearchService.findSongsByName(searchTerm);
-        return songsByName.stream().map(song ->
-                SongSearchSuggestion.builder()
-                        .song(song)
-                        .breadcrumb(buildBreadcrumb(categoryService.getCategoryParentTreePath(song.getCategory().getId())))
+        return songsByName.stream()
+                .map(song -> SongSearchSuggestion.builder()
+                        .song(toSongDto(song))
+                        .path(buildPath(categoryService.getCategoryParentTreePath(song.getCategory().getId())))
                         .build()
-        ).collect(toList());
+                ).collect(toList());
     }
 
     @PostMapping

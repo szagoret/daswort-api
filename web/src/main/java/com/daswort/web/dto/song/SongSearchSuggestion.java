@@ -1,13 +1,14 @@
 package com.daswort.web.dto.song;
 
-import com.daswort.core.entity.Song;
-import com.daswort.web.dto.breadcrumb.Breadcrumb;
+import com.daswort.web.dto.IdNameDto;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
 public class SongSearchSuggestion {
-    private Breadcrumb breadcrumb;
-    private Song song;
+    private List<IdNameDto> path;
+    private SongDto song;
 }
