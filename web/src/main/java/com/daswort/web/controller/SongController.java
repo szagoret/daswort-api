@@ -10,6 +10,7 @@ import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.storage.FileResourceBytes;
 import com.daswort.web.dto.song.SongSearchSuggestion;
+import com.daswort.web.mapper.SongDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
@@ -124,7 +125,8 @@ public class SongController {
     @PostMapping("/search")
     public ResponseEntity<?> advancedSearch(@RequestBody SongSearch songSearch, Pageable pageable) {
         final var songs = songSearchService.advancedSearch(songSearch, pageable);
-        return ResponseEntity.ok(songs);
+        final var songsDtos = songs.stream().map(SongDtoMapper::toSongDto).collect(toList());
+        return ResponseEntity.ok(songsDtos);
     }
 
 }

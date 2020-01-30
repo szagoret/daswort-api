@@ -5,6 +5,9 @@ import com.daswort.web.dto.song.SongDto;
 
 import java.util.Objects;
 
+import static com.daswort.web.mapper.AuthorDtoMapper.toAuthorDto;
+import static com.daswort.web.mapper.IdNameDtoMapper.toIdNameDto;
+
 public class SongDtoMapper {
 
     public static SongDto toSongDto(Song song) {
@@ -12,6 +15,11 @@ public class SongDtoMapper {
         return SongDto.builder()
                 .id(song.getId())
                 .name(song.getName())
+                .composition(toIdNameDto(song.getComposition()))
+                .difficulty(toIdNameDto(song.getDifficulty()))
+                .topics(toIdNameDto(song.getTopics()))
+                .melodyAuthor(toAuthorDto(song.getMelody()))
+                .difficulty(toIdNameDto(song.getDifficulty()))
                 .build();
     }
 }

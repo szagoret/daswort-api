@@ -7,7 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -15,7 +18,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class SongSearchSpecification implements Specification<SongSearch> {
 
     @Override
-    public CriteriaDefinition toCriteriaDefinition(SongSearch songSearch) {
+    public Optional<CriteriaDefinition> toCriteriaDefinition(SongSearch songSearch) {
         final List<Criteria> criteriaFilters = new ArrayList<>();
 
         // by name
@@ -54,6 +57,8 @@ public class SongSearchSpecification implements Specification<SongSearch> {
         }
 
         // build result search criteria
-        return new Criteria().andOperator(criteriaFilters.toArray(Criteria[]::new));
+        return criteriaFilters.size() > 0
+                ? of(new Criteria().andOperator(criteriaFilters.toArray(Criteria[]::new)))
+                : empty();
     }
 }

@@ -69,7 +69,11 @@ public class SongSearchService {
 
 
     public List<Song> advancedSearch(SongSearch songSearch, Pageable pageable) {
-        final Query query = new Query(songSearchSpecification.toCriteriaDefinition(songSearch))
+        requireNonNull(songSearch);
+        requireNonNull(pageable);
+        final Query query = songSearchSpecification.toCriteriaDefinition(songSearch)
+                .map(Query::new)
+                .orElse(new Query())
                 .with(pageable);
         return mongoOperations.find(query, Song.class);
     }
