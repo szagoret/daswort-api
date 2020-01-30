@@ -33,6 +33,27 @@ public class SongSearchSpecification implements Specification<SongSearch> {
             criteriaFilters.addAll(tagsCriteriaList);
         }
 
+        // by topics
+        if (songSearch.getTopicsIds().size() > 0) {
+            criteriaFilters.add(where("topics").elemMatch(where("_id").in(songSearch.getTopicsIds())));
+        }
+
+        // by melody author
+        if (songSearch.getMelodyAuthorsIds().size() > 0) {
+            criteriaFilters.add(where("melody._id").in(songSearch.getMelodyAuthorsIds()));
+        }
+
+        // by composition
+        if (songSearch.getCompositionsIds().size() > 0) {
+            criteriaFilters.add(where("composition._id").in(songSearch.getCompositionsIds()));
+        }
+
+        // by difficulty
+        if (songSearch.getDifficultiesIds().size() > 0) {
+            criteriaFilters.add(where("difficulty._id").in(songSearch.getDifficultiesIds()));
+        }
+
+        // build result search criteria
         return new Criteria().andOperator(criteriaFilters.toArray(Criteria[]::new));
     }
 }
