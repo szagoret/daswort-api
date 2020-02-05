@@ -70,9 +70,7 @@ public class SongUpdateService {
         updatedSong.getDifficultyId().map(id -> idNameService.getById(difficulty, id)).ifPresent(song::setDifficulty);
         updatedSong.getWrittenOn().ifPresent(song::setWrittenOn);
         updatedSong.getTopicsIds().map(ids -> idNameService.getAllByIds(topic, ids)).ifPresent(song::setTopics);
-        updatedSong.getMelodyId().flatMap(authorRepository::findById).ifPresent(song::setMelody);
         updatedSong.getArrangementId().flatMap(authorRepository::findById).ifPresent(song::setArrangement);
-        updatedSong.getAdaptationId().flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
 
         return mongoOperations.update(Song.class)
                 .matching(query(where("id").is(songId)))

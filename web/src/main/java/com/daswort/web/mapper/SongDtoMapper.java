@@ -18,7 +18,7 @@ public class SongDtoMapper {
                 .composition(toIdNameDto(song.getComposition()))
                 .difficulty(toIdNameDto(song.getDifficulty()))
                 .topics(toIdNameDto(song.getTopics()))
-                .melodyAuthor(toAuthorDto(song.getMelody()))
+                .arrangement(toAuthorDto(song.getArrangement()))
                 .difficulty(toIdNameDto(song.getDifficulty()))
                 .build();
     }

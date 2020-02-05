@@ -15,5 +15,5 @@ public class SongDto {
     private IdNameDto composition;
     private IdNameDto difficulty;
     private List<IdNameDto> topics;
-    private AuthorDto melodyAuthor;
+    private AuthorDto arrangement;
 }

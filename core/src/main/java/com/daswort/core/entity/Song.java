@@ -47,8 +47,5 @@ public class Song {
     @CollectionName(IdNameCollection.Constants.topic)
     private List<IdName> topics;
 
-    private Author melody;
     private Author arrangement;
-    private Author adaptation;
-
 }
