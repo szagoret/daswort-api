@@ -3,6 +3,7 @@ package com.daswort.core.service.song;
 import com.daswort.core.entity.File;
 import com.daswort.core.entity.Song;
 import com.daswort.core.model.SongSearch;
+import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
 import org.springframework.data.domain.Pageable;
@@ -68,13 +69,18 @@ public class SongSearchService {
     }
 
 
-    public List<Song> advancedSearch(SongSearch songSearch, Pageable pageable) {
+    public SongSearchResult advancedSearch(SongSearch songSearch, Pageable pageable) {
         requireNonNull(songSearch);
         requireNonNull(pageable);
         final Query query = songSearchSpecification.toCriteriaDefinition(songSearch)
                 .map(Query::new)
-                .orElse(new Query())
-                .with(pageable);
-        return mongoOperations.find(query, Song.class);
+                .orElse(new Query());
+        Long count = mongoOperations.count(query, Song.class);
+        List<Song> songList = mongoOperations.find(query.with(pageable), Song.class);
+        return SongSearchResult.builder()
+                .songList(songList)
+                .totalCount(count)
+                .pageable(pageable)
+                .build();
     }
 }

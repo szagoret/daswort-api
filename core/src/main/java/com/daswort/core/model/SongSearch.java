@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -27,6 +28,11 @@ public class SongSearch {
     private Set<String> melodyAuthorsIds = new HashSet<>();
     private String arrangementId;
     private String adaptationId;
+
+    @NonNull
+    private Integer page;
+    @NonNull
+    private Integer size;
 
     public Optional<String> getName() {
         return ofNullable(name);
@@ -70,5 +76,15 @@ public class SongSearch {
 
     public Optional<String> getAdaptationId() {
         return ofNullable(adaptationId);
+    }
+
+    @NonNull
+    public Integer getPage() {
+        return page;
+    }
+
+    @NonNull
+    public Integer getSize() {
+        return size;
     }
 }

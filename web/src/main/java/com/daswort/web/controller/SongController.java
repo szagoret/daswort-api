@@ -9,11 +9,12 @@ import com.daswort.core.service.song.SongFileService;
 import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.storage.FileResourceBytes;
+import com.daswort.web.dto.song.SongPageableListDto;
 import com.daswort.web.dto.song.SongSearchSuggestion;
 import com.daswort.web.mapper.SongDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -123,10 +124,16 @@ public class SongController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> advancedSearch(@RequestBody SongSearch songSearch, Pageable pageable) {
-        final var songs = songSearchService.advancedSearch(songSearch, pageable);
-        final var songsDtos = songs.stream().map(SongDtoMapper::toSongDto).collect(toList());
-        return ResponseEntity.ok(songsDtos);
+    public ResponseEntity<SongPageableListDto> advancedSearch(@RequestBody SongSearch songSearch) {
+        final var songSearchResult = songSearchService.advancedSearch(songSearch, PageRequest.of(songSearch.getPage(), songSearch.getSize()));
+        final var songsDtos = songSearchResult.getSongList().stream().map(SongDtoMapper::toSongDto).collect(toList());
+        var result = SongPageableListDto.builder()
+                .songs(songsDtos)
+                .page(songSearchResult.getPageable().getPageNumber())
+                .size(songSearchResult.getPageable().getPageSize())
+                .total(songSearchResult.getTotalCount())
+                .build();
+        return ResponseEntity.ok(result);
     }
 
 }
