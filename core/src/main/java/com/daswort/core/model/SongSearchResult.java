@@ -13,4 +13,6 @@ public class SongSearchResult {
     private List<Song> songList;
     private Pageable pageable;
     private Long totalCount;
+    private String sortDirection;
+    private String sortProperty;
 }

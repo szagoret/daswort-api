@@ -34,6 +34,9 @@ public class SongSearch {
     @NonNull
     private Integer size;
 
+    private String sortDirection;
+    private String sortProperty;
+
     public Optional<String> getName() {
         return ofNullable(name);
     }
@@ -76,15 +79,5 @@ public class SongSearch {
 
     public Optional<String> getAdaptationId() {
         return ofNullable(adaptationId);
-    }
-
-    @NonNull
-    public Integer getPage() {
-        return page;
-    }
-
-    @NonNull
-    public Integer getSize() {
-        return size;
     }
 }

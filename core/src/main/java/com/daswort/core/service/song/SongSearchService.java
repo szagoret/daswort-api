@@ -7,6 +7,7 @@ import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,15 +74,28 @@ public class SongSearchService {
     public SongSearchResult advancedSearch(SongSearch songSearch, Pageable pageable) {
         requireNonNull(songSearch);
         requireNonNull(pageable);
+
+        final var sortMap = new HashMap<String, String>();
+        sortMap.put("name", "name");
+        sortMap.put("arrangement", "arrangement.firstName");
+        sortMap.put("composition", "composition.name");
+        sortMap.put("difficulty", "difficulty.name");
+        sortMap.put("createdOn", "addedOn");
+
+        String sortDirection = songSearch.getSortDirection();
+        String sortProperty = songSearch.getSortProperty();
+        final var sortBy = Sort.by(Sort.Direction.valueOf(sortDirection), sortMap.get(sortProperty));
         final Query query = songSearchSpecification.toCriteriaDefinition(songSearch)
                 .map(Query::new)
                 .orElse(new Query());
         Long count = mongoOperations.count(query, Song.class);
-        List<Song> songList = mongoOperations.find(query.with(pageable), Song.class);
+        List<Song> songList = mongoOperations.find(query.with(pageable).with(sortBy), Song.class);
         return SongSearchResult.builder()
                 .songList(songList)
                 .totalCount(count)
                 .pageable(pageable)
+                .sortDirection(sortDirection)
+                .sortProperty(sortProperty)
                 .build();
     }
 }
