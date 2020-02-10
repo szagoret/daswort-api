@@ -23,6 +23,11 @@ public class IdNameService {
         this.mongoOperations = mongoOperations;
     }
 
+    public List<IdName> getAll(IdNameCollection collection) {
+        Objects.requireNonNull(collection);
+        return mongoOperations.findAll(IdName.class, collection.getName());
+    }
+
     public IdName getById(IdNameCollection collection, String id) {
         Objects.requireNonNull(collection, id);
         return mongoOperations.findOne(query(where("id").is(id)), IdName.class, collection.name());

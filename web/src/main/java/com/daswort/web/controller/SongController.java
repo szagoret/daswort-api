@@ -1,16 +1,19 @@
 package com.daswort.web.controller;
 
-import com.daswort.core.entity.File;
-import com.daswort.core.entity.Song;
+import com.daswort.core.entity.*;
 import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongUpdate;
+import com.daswort.core.service.author.AuthorService;
 import com.daswort.core.service.category.CategoryService;
+import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.service.song.SongFileService;
 import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.storage.FileResourceBytes;
+import com.daswort.web.dto.song.SongFiltersDto;
 import com.daswort.web.dto.song.SongPageableListDto;
 import com.daswort.web.dto.song.SongSearchSuggestion;
+import com.daswort.web.mapper.AuthorIdNameDtoMapper;
 import com.daswort.web.mapper.SongDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
 import org.springframework.core.io.InputStreamResource;
@@ -25,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.daswort.web.builder.SongPathBuilder.buildPath;
+import static com.daswort.web.mapper.IdNameDtoMapper.toIdNameDto;
 import static com.daswort.web.mapper.SongDtoMapper.toSongDto;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
@@ -38,15 +42,21 @@ public class SongController {
     private final SongUpdateService songUpdateService;
     private final CategoryService categoryService;
     private final SongFileService songFileService;
+    private final IdNameService idNameService;
+    private final AuthorService authorService;
 
     public SongController(SongSearchService songSearchService,
                           SongUpdateService songUpdateService,
                           CategoryService categoryService,
-                          SongFileService songFileService) {
+                          SongFileService songFileService,
+                          IdNameService idNameService,
+                          AuthorService authorService) {
         this.songSearchService = songSearchService;
         this.songUpdateService = songUpdateService;
         this.categoryService = categoryService;
         this.songFileService = songFileService;
+        this.idNameService = idNameService;
+        this.authorService = authorService;
     }
 
     @GetMapping("/{songId}")
@@ -134,6 +144,24 @@ public class SongController {
                 .total(songSearchResult.getTotalCount())
                 .build();
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/filters")
+    public ResponseEntity<SongFiltersDto> getFilters() {
+        List<IdName> topics = idNameService.getAll(IdNameCollection.topic);
+        List<IdName> compositions = idNameService.getAll(IdNameCollection.composition);
+        List<IdName> difficulties = idNameService.getAll(IdNameCollection.difficulty);
+        List<IdName> instruments = idNameService.getAll(IdNameCollection.instrument);
+        List<Author> authors = authorService.getAuthorList();
+        final var songFilters = SongFiltersDto.builder()
+                .topics(toIdNameDto(topics))
+                .compositions(toIdNameDto(compositions))
+                .difficulties(toIdNameDto(difficulties))
+                .instruments(toIdNameDto(instruments))
+                .authors(AuthorIdNameDtoMapper.toIdNameDto(authors))
+                .build();
+
+        return ResponseEntity.ok(songFilters);
     }
 
 }
