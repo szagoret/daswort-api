@@ -21,13 +21,10 @@ public class SongSearch {
     private String categoryId;
     private Set<String> tagsIds = new HashSet<>();
     private Set<String> compositionsIds = new HashSet<>();
-    private String partitionId;
     private Set<String> instrumentsIds = new HashSet<>();
     private Set<String> difficultiesIds = new HashSet<>();
     private Set<String> topicsIds = new HashSet<>();
-    private Set<String> melodyAuthorsIds = new HashSet<>();
-    private String arrangementId;
-    private String adaptationId;
+    private Set<String> authorsIds = new HashSet<>();
 
     @NonNull
     private Integer page;
@@ -40,44 +37,8 @@ public class SongSearch {
     public Optional<String> getName() {
         return ofNullable(name);
     }
-
     public Optional<String> getCategoryId() {
         return ofNullable(categoryId);
     }
 
-    public Set<String> getTagsIds() {
-        return tagsIds;
-    }
-
-    public Set<String> getCompositionsIds() {
-        return compositionsIds;
-    }
-
-    public Optional<String> getPartitionId() {
-        return ofNullable(partitionId);
-    }
-
-    public Set<String> getInstrumentsIds() {
-        return instrumentsIds;
-    }
-
-    public Set<String> getDifficultiesIds() {
-        return difficultiesIds;
-    }
-
-    public Set<String> getTopicsIds() {
-        return topicsIds;
-    }
-
-    public Set<String> getMelodyAuthorsIds() {
-        return melodyAuthorsIds;
-    }
-
-    public Optional<String> getArrangementId() {
-        return ofNullable(arrangementId);
-    }
-
-    public Optional<String> getAdaptationId() {
-        return ofNullable(adaptationId);
-    }
 }
