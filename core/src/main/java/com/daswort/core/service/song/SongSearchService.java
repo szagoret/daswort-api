@@ -6,6 +6,7 @@ import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -14,8 +15,6 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.ReplaceRootOperation;
 import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -48,11 +47,7 @@ public class SongSearchService {
     }
 
     public List<Song> findSongsByName(String searchTerm) {
-        TextCriteria fullTextSearch = TextCriteria.forLanguage("de").matchingAny(searchTerm);
-        TextQuery query = TextQuery.queryText(fullTextSearch);
-        query.sortByScore();
-        query.limit(10);
-        return mongoOperations.find(query, Song.class);
+        return songRepository.findAllByQuery(searchTerm, PageRequest.of(0, 5));
     }
 
     public File getSongFile(String songId, String songFileCode) {

@@ -3,7 +3,6 @@ package com.daswort.core.entity;
 import com.daswort.core.annotation.CollectionName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -18,7 +17,6 @@ public class Song {
     @MongoId(FieldType.OBJECT_ID)
     private String id;
 
-    @TextIndexed
     private String name;
 
     private List<File> files;
