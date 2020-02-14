@@ -1,1 +1,1 @@
-web: mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=${PORT}' -pl web
+web: ls -a core/target
