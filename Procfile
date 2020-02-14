@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar $PATH_TO_JAR com.daswort.WebApplication
+web: java -Dserver.port=$PORT -jar web-0.0.1-SNAPSHOT.jar
