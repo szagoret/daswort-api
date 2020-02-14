@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io/daswort-web"})
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
