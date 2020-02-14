@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -cp target/classes:target/dependency/*  com.daswort.WebApplication
+web: ls -a
