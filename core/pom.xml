@@ -11,7 +11,7 @@
     <artifactId>core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>core</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Core library module</description>
 
     <dependencies>
         <dependency>

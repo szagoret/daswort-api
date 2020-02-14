@@ -11,7 +11,7 @@
     <artifactId>web</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>web</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Web application module</description>
 
     <dependencies>
         <dependency>
@@ -28,6 +28,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

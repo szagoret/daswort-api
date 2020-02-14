@@ -33,7 +33,7 @@ import static com.daswort.web.mapper.SongDtoMapper.toSongDto;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io"})
 @RestController
 @RequestMapping("/song")
 public class SongController {
