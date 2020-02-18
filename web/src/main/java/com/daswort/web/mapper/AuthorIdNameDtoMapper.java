@@ -16,7 +16,7 @@ public class AuthorIdNameDtoMapper {
                         .id(a.getId())
                         .name(String.join(" ", a.getFirstName(), a.getLastName()))
                         .build()
-        ).orElse(null);
+        ).orElse(IdNameDto.builder().build());
     }
 
     public static List<IdNameDto> toIdNameDto(List<Author> authorList) {

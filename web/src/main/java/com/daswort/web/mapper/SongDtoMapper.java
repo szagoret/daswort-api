@@ -20,6 +20,8 @@ public class SongDtoMapper {
                 .topics(toIdNameDto(song.getTopics()))
                 .arrangement(toAuthorDto(song.getArrangement()))
                 .difficulty(toIdNameDto(song.getDifficulty()))
+                .instruments(toIdNameDto(song.getInstruments()))
+                .createdAt(song.getCreatedAt())
                 .build();
     }
 }

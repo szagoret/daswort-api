@@ -17,7 +17,7 @@ public class AuthorDtoMapper {
                         .firstName(a.getFirstName())
                         .lastName(a.getLastName())
                         .build()
-        ).orElse(null);
+        ).orElse(AuthorDto.builder().build());
     }
 
     public static List<AuthorDto> toAuthorDto(List<Author> authorList) {

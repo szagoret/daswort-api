@@ -5,6 +5,7 @@ import com.daswort.web.dto.IdNameDto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -15,5 +16,7 @@ public class SongDto {
     private IdNameDto composition;
     private IdNameDto difficulty;
     private List<IdNameDto> topics;
+    private List<IdNameDto> instruments;
     private AuthorDto arrangement;
+    private Instant createdAt;
 }

@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Optional.ofNullable;
+
 @Setter
 @Builder
 public class SongUpdate {
@@ -26,50 +28,50 @@ public class SongUpdate {
 
 
     public Optional<String> getName() {
-        return Optional.ofNullable(name);
+        return ofNullable(name);
     }
 
     public Optional<String> getCategoryId() {
-        return Optional.ofNullable(categoryId);
+        return ofNullable(categoryId);
     }
 
     public Optional<Set<String>> getTagsIds() {
-        return Optional.ofNullable(tagsIds);
+        return ofNullable(tagsIds);
     }
 
     public Optional<String> getCompositionId() {
-        return Optional.ofNullable(compositionId);
+        return ofNullable(compositionId);
     }
 
     public Optional<String> getPartitionId() {
-        return Optional.ofNullable(partitionId);
+        return ofNullable(partitionId);
     }
 
     public Optional<Set<String>> getInstrumentsIds() {
-        return Optional.ofNullable(instrumentsIds);
+        return ofNullable(instrumentsIds);
     }
 
     public Optional<String> getDifficultyId() {
-        return Optional.ofNullable(difficultyId);
+        return ofNullable(difficultyId);
     }
 
     public Optional<LocalDate> getWrittenOn() {
-        return Optional.ofNullable(writtenOn);
+        return ofNullable(writtenOn);
     }
 
     public Optional<Set<String>> getTopicsIds() {
-        return Optional.ofNullable(topicsIds);
+        return ofNullable(topicsIds);
     }
 
     public Optional<String> getMelodyId() {
-        return Optional.ofNullable(melodyId);
+        return ofNullable(melodyId);
     }
 
     public Optional<String> getArrangementId() {
-        return Optional.ofNullable(arrangementId);
+        return ofNullable(arrangementId);
     }
 
     public Optional<String> getAdaptationId() {
-        return Optional.ofNullable(adaptationId);
+        return ofNullable(adaptationId);
     }
 }

@@ -2,10 +2,12 @@ package com.daswort.core.service.song;
 
 import com.daswort.core.entity.File;
 import com.daswort.core.entity.Song;
+import com.daswort.core.exception.SongNotFoundException;
 import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -43,6 +45,9 @@ public class SongSearchService {
     }
 
     public Optional<Song> findSongById(String songId) {
+        if (!ObjectId.isValid(songId)) {
+            throw new SongNotFoundException();
+        }
         return songRepository.findById(songId);
     }
 
@@ -75,7 +80,7 @@ public class SongSearchService {
         sortMap.put("arrangement", "arrangement.firstName");
         sortMap.put("composition", "composition.name");
         sortMap.put("difficulty", "difficulty.name");
-        sortMap.put("createdOn", "addedOn");
+        sortMap.put("createdAt", "createdAt");
 
         String sortDirection = songSearch.getSortDirection();
         String sortProperty = songSearch.getSortProperty();

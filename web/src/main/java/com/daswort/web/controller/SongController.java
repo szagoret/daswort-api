@@ -10,6 +10,7 @@ import com.daswort.core.service.song.SongFileService;
 import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.storage.FileResourceBytes;
+import com.daswort.web.dto.song.SongDto;
 import com.daswort.web.dto.song.SongFiltersDto;
 import com.daswort.web.dto.song.SongPageableListDto;
 import com.daswort.web.dto.song.SongSearchSuggestion;
@@ -60,8 +61,9 @@ public class SongController {
     }
 
     @GetMapping("/{songId}")
-    public Song getSongById(@PathVariable String songId) {
-        return songSearchService.findSongById(songId).orElse(new Song());
+    public ResponseEntity<SongDto> getSongById(@PathVariable String songId) {
+        final var song = songSearchService.findSongById(songId).orElse(new Song());
+        return ResponseEntity.ok(toSongDto(song));
     }
 
     @GetMapping("/find")

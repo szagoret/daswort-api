@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,8 +81,10 @@ public class SongUpdateService {
                 .findAndReplaceValue();
     }
 
-    public Song createSong(SongUpdate createSong) {
-        final var song = songRepository.save(new Song());
+    public Song createSong(final SongUpdate createSong) {
+        final var songToCreate = new Song();
+        songToCreate.setCreatedAt(Instant.now());
+        final var song = songRepository.save(songToCreate);
         return updateSong(createSong, song.getId());
     }
 

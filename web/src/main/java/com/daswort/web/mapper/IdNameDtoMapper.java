@@ -17,7 +17,7 @@ public class IdNameDtoMapper {
                         .id(idN.getId())
                         .name(idN.getName())
                         .build())
-                .orElse(null);
+                .orElse(IdNameDto.builder().build());
     }
 
     public static List<IdNameDto> toIdNameDto(List<IdName> idNameList) {

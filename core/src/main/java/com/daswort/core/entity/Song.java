@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -40,7 +40,7 @@ public class Song {
 
     private LocalDate writtenOn;
 
-    private LocalDateTime addedOn;
+    private Instant createdAt;
 
     @CollectionName(IdNameCollection.Constants.topic)
     private List<IdName> topics;
