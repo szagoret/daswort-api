@@ -115,7 +115,7 @@ public class SongController {
                                 .contentLength(fileResource.getContentLength())
                                 .header(HttpHeaders.CONTENT_DISPOSITION,
                                         ContentDispositionBuilder.builder()
-                                                .filename(file.getName())
+                                                .filename(fileResource.getName())
                                                 .build()
                                                 .toString())
                                 .body(new InputStreamResource(fileResource.getInputStream())))
