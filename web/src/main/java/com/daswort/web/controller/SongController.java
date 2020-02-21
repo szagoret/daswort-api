@@ -31,6 +31,7 @@ import java.util.List;
 import static com.daswort.web.builder.SongPathBuilder.buildPath;
 import static com.daswort.web.mapper.IdNameDtoMapper.toIdNameDto;
 import static com.daswort.web.mapper.SongDtoMapper.toSongDto;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
 
@@ -72,7 +73,7 @@ public class SongController {
         return songsByName.stream()
                 .map(song -> SongSearchSuggestion.builder()
                         .song(toSongDto(song))
-                        .path(buildPath(categoryService.getCategoryParentTreePath(song.getCategory().getId())))
+                        .path(buildPath(categoryService.getCategoryParentTreePath(ofNullable(song.getCategory()).map(Category::getId).orElse(null))))
                         .build()
                 ).collect(toList());
     }

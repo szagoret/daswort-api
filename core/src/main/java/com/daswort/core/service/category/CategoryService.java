@@ -53,7 +53,9 @@ public class CategoryService {
     }
 
     public List<Category> getCategoryParentTreePath(String categoryId) {
-        requireNonNull(categoryId);
+        if (categoryId == null) {
+            return List.of();
+        }
 
         MatchOperation filter = Aggregation.match(where("_id").is(categoryId));
 
