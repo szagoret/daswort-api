@@ -1,5 +1,6 @@
 package com.daswort.web.dto.song;
 
+import com.daswort.core.entity.File;
 import com.daswort.web.dto.AuthorDto;
 import com.daswort.web.dto.IdNameDto;
 import lombok.Builder;
@@ -19,4 +20,5 @@ public class SongDto {
     private List<IdNameDto> instruments;
     private AuthorDto arrangement;
     private Instant createdAt;
+    private List<File> files;
 }
