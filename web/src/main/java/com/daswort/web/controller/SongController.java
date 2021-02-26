@@ -17,6 +17,7 @@ import com.daswort.web.dto.song.SongSearchSuggestion;
 import com.daswort.web.mapper.AuthorIdNameDtoMapper;
 import com.daswort.web.mapper.SongDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ import static org.springframework.http.MediaType.parseMediaType;
 @CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io"})
 @RestController
 @RequestMapping("/song")
+@RequiredArgsConstructor
 public class SongController {
 
     private final SongSearchService songSearchService;
@@ -46,20 +48,6 @@ public class SongController {
     private final SongFileService songFileService;
     private final IdNameService idNameService;
     private final AuthorService authorService;
-
-    public SongController(SongSearchService songSearchService,
-                          SongUpdateService songUpdateService,
-                          CategoryService categoryService,
-                          SongFileService songFileService,
-                          IdNameService idNameService,
-                          AuthorService authorService) {
-        this.songSearchService = songSearchService;
-        this.songUpdateService = songUpdateService;
-        this.categoryService = categoryService;
-        this.songFileService = songFileService;
-        this.idNameService = idNameService;
-        this.authorService = authorService;
-    }
 
     @GetMapping("/{songId}")
     public ResponseEntity<SongDto> getSongById(@PathVariable String songId) {

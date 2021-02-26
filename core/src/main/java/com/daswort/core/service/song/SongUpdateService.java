@@ -13,7 +13,7 @@ import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.storage.FileResource;
 import com.daswort.core.utils.FileUtils;
 import com.daswort.core.utils.IdNameSongUtils;
-import com.mongodb.QueryBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -31,6 +31,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
+@RequiredArgsConstructor
 public class SongUpdateService {
 
     private final MongoOperations mongoOperations;
@@ -40,21 +41,6 @@ public class SongUpdateService {
     private final IdNameService idNameService;
     private final AuthorRepository authorRepository;
     private final SongFileService songFileService;
-
-    public SongUpdateService(MongoOperations mongoOperations,
-                             SongRepository songRepository,
-                             SongSearchService songSearchService,
-                             CategoryService categoryService,
-                             IdNameService idNameService,
-                             AuthorRepository authorRepository, SongFileService songFileService) {
-        this.mongoOperations = mongoOperations;
-        this.songRepository = songRepository;
-        this.songSearchService = songSearchService;
-        this.categoryService = categoryService;
-        this.idNameService = idNameService;
-        this.authorRepository = authorRepository;
-        this.songFileService = songFileService;
-    }
 
     public Song updateSong(SongUpdate updatedSong, String songId) {
         requireNonNull(updatedSong);
@@ -115,12 +101,13 @@ public class SongUpdateService {
     }
 
     public void removeSongFile(String songId, String fileCode) {
-        final var removeElement = new Update().pull("files", QueryBuilder.start("fileCode").is(fileCode).get());
-        mongoOperations.update(Song.class)
-                .matching(query(where("id").is(songId)))
-                .apply(removeElement).first();
-
-        songFileService.removeSongFile(songId, fileCode);
+//        mongoOperations.update(Song.class).apply()
+//        final var removeElement = new Update().pull("files", QueryBuilder.start("fileCode").is(fileCode).get());
+//        mongoOperations.update(Song.class)
+//                .matching(query(where("id").is(songId)))
+//                .apply(removeElement).first();
+//
+//        songFileService.removeSongFile(songId, fileCode);
     }
 
     public void removeSongIdNameField(String fieldName) {
@@ -131,8 +118,8 @@ public class SongUpdateService {
 
     public void removeSongIdNameArrayItem(String fieldName, String itemId) {
         requireNonNull(fieldName, itemId);
-        final var removeElementOperation = new Update().pull(fieldName, QueryBuilder.start("id").is(itemId).get());
-        mongoOperations.update(Song.class).apply(removeElementOperation).all();
+//        final var removeElementOperation = new Update().pull(fieldName, QueryBuilder.start("id").is(itemId).get());
+//        mongoOperations.update(Song.class).apply(removeElementOperation).all();
     }
 
     public void updateSongIdNameField(String fieldName, IdName updateObject) {
