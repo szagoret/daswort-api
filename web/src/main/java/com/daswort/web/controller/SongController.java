@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -125,7 +126,7 @@ public class SongController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<SongPageableListDto> advancedSearch(@RequestBody SongSearch songSearch) {
+    public ResponseEntity<SongPageableListDto> advancedSearch(@RequestBody @Validated SongSearch songSearch) {
         final var songSearchResult = songSearchService.advancedSearch(songSearch, PageRequest.of(songSearch.getPage(), songSearch.getSize()));
         final var songsDtos = songSearchResult.getSongList().stream().map(SongDtoMapper::toSongDto).collect(toList());
         var result = SongPageableListDto.builder()
@@ -150,6 +151,9 @@ public class SongController {
                 .difficulties(toIdNameDto(difficulties))
                 .instruments(toIdNameDto(instruments))
                 .authors(AuthorIdNameDtoMapper.toIdNameDto(authors))
+                .melodies(AuthorIdNameDtoMapper.toIdNameDto(authors))
+                .arrangements(AuthorIdNameDtoMapper.toIdNameDto(authors))
+                .adaptations(AuthorIdNameDtoMapper.toIdNameDto(authors))
                 .build();
 
         return ResponseEntity.ok(songFilters);

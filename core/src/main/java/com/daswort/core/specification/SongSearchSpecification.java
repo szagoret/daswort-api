@@ -13,6 +13,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -30,7 +31,7 @@ public class SongSearchSpecification implements Specification<SongSearch> {
         final List<Criteria> criteriaFilters = new ArrayList<>();
 
         // by name
-        songSearch.getName().ifPresent(name -> criteriaFilters.add(where("name").is(name)));
+        songSearch.getName().map(String::trim).filter(not(String::isBlank)).ifPresent(name -> criteriaFilters.add(where("name").regex(name, "i")));
 
         // by category
         songSearch.getCategoryId().ifPresent(categoryId -> criteriaFilters.add(where("category._id").is(categoryId)));

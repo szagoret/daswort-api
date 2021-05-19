@@ -19,6 +19,8 @@ public class SongDto {
     private List<IdNameDto> topics;
     private List<IdNameDto> instruments;
     private AuthorDto arrangement;
+    private AuthorDto adaptation;
+    private AuthorDto melody;
     private Instant createdAt;
     private List<File> files;
 }

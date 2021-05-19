@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 
 import java.util.HashSet;
@@ -31,8 +32,8 @@ public class SongSearch {
     @NonNull
     private Integer size;
 
-    private String sortDirection;
-    private String sortProperty;
+    private String sortDirection = Sort.DEFAULT_DIRECTION.name();
+    private String sortProperty = "name";
 
     public Optional<String> getName() {
         return ofNullable(name);

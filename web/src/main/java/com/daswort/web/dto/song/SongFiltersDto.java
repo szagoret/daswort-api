@@ -14,4 +14,7 @@ public class SongFiltersDto {
     private List<IdNameDto> difficulties;
     private List<IdNameDto> instruments;
     private List<IdNameDto> authors;
+    private List<IdNameDto> melodies;
+    private List<IdNameDto> arrangements;
+    private List<IdNameDto> adaptations;
 }
