@@ -37,7 +37,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
 
-@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io", "https://daswort.gitlab.io"})
 @RestController
 @RequestMapping("/song")
 @RequiredArgsConstructor
