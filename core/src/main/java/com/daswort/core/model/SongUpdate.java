@@ -1,77 +1,46 @@
 package com.daswort.core.model;
 
+import com.daswort.core.entity.Author;
+import com.daswort.core.entity.IdName;
 import lombok.Builder;
-import lombok.Setter;
+import lombok.Value;
+import org.springframework.lang.NonNull;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Optional.ofNullable;
 
-@Setter
+@Value
 @Builder
 public class SongUpdate {
 
+    @NonNull
     String name;
-    String categoryId;
-    Set<String> tagsIds;
-    String compositionId;
-    String partitionId;
-    Set<String> instrumentsIds;
-    String difficultyId;
-    LocalDate writtenOn;
-    Set<String> topicsIds;
-    String melodyId;
-    String arrangementId;
-    String adaptationId;
+    IdName composition;
+    List<IdName> topics;
+    Author melody;
+    Author arrangement;
+    Author adaptation;
 
 
-    public Optional<String> getName() {
-        return ofNullable(name);
+    public Optional<IdName> getComposition() {
+        return ofNullable(composition);
     }
 
-    public Optional<String> getCategoryId() {
-        return ofNullable(categoryId);
+    public Optional<List<IdName>> getTopics() {
+        return ofNullable(topics);
     }
 
-    public Optional<Set<String>> getTagsIds() {
-        return ofNullable(tagsIds);
+    public Optional<Author> getMelody() {
+        return ofNullable(melody);
     }
 
-    public Optional<String> getCompositionId() {
-        return ofNullable(compositionId);
+    public Optional<Author> getArrangement() {
+        return ofNullable(arrangement);
     }
 
-    public Optional<String> getPartitionId() {
-        return ofNullable(partitionId);
-    }
-
-    public Optional<Set<String>> getInstrumentsIds() {
-        return ofNullable(instrumentsIds);
-    }
-
-    public Optional<String> getDifficultyId() {
-        return ofNullable(difficultyId);
-    }
-
-    public Optional<LocalDate> getWrittenOn() {
-        return ofNullable(writtenOn);
-    }
-
-    public Optional<Set<String>> getTopicsIds() {
-        return ofNullable(topicsIds);
-    }
-
-    public Optional<String> getMelodyId() {
-        return ofNullable(melodyId);
-    }
-
-    public Optional<String> getArrangementId() {
-        return ofNullable(arrangementId);
-    }
-
-    public Optional<String> getAdaptationId() {
-        return ofNullable(adaptationId);
+    public Optional<Author> getAdaptation() {
+        return ofNullable(adaptation);
     }
 }

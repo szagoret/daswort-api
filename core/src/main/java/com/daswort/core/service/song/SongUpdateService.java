@@ -1,19 +1,17 @@
 package com.daswort.core.service.song;
 
-import com.daswort.core.entity.File;
-import com.daswort.core.entity.IdName;
-import com.daswort.core.entity.IdNameCollection;
-import com.daswort.core.entity.Song;
+import com.daswort.core.entity.*;
 import com.daswort.core.exception.SongNotFoundException;
 import com.daswort.core.model.SongUpdate;
 import com.daswort.core.repository.AuthorRepository;
 import com.daswort.core.repository.SongRepository;
-import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.storage.FileResource;
 import com.daswort.core.utils.FileUtils;
 import com.daswort.core.utils.IdNameSongUtils;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -23,9 +21,11 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-import static com.daswort.core.entity.IdNameCollection.*;
+import static com.daswort.core.entity.IdNameCollection.composition;
+import static com.daswort.core.entity.IdNameCollection.topic;
 import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -37,7 +37,6 @@ public class SongUpdateService {
     private final MongoOperations mongoOperations;
     private final SongRepository songRepository;
     private final SongSearchService songSearchService;
-    private final CategoryService categoryService;
     private final IdNameService idNameService;
     private final AuthorRepository authorRepository;
     private final SongFileService songFileService;
@@ -47,17 +46,14 @@ public class SongUpdateService {
         requireNonNull(songId);
 
         final var song = songSearchService.findSongById(songId).orElseThrow(SongNotFoundException::new);
+        song.setName(updatedSong.getName());
 
-        updatedSong.getName().ifPresent(song::setName);
-        updatedSong.getCategoryId().flatMap(categoryService::findById).ifPresent(song::setCategory);
-        updatedSong.getTagsIds().map(ids -> idNameService.getAllByIds(tag, ids)).ifPresent(song::setTags);
-        updatedSong.getCompositionId().map(id -> idNameService.getById(composition, id)).ifPresent(song::setComposition);
-        updatedSong.getPartitionId().map(id -> idNameService.getById(partition, id)).ifPresent(song::setPartition);
-        updatedSong.getInstrumentsIds().map(ids -> idNameService.getAllByIds(instrument, ids)).ifPresent(song::setInstruments);
-        updatedSong.getDifficultyId().map(id -> idNameService.getById(difficulty, id)).ifPresent(song::setDifficulty);
-        updatedSong.getWrittenOn().ifPresent(song::setWrittenOn);
-        updatedSong.getTopicsIds().map(ids -> idNameService.getAllByIds(topic, ids)).ifPresent(song::setTopics);
-        updatedSong.getArrangementId().flatMap(authorRepository::findById).ifPresent(song::setArrangement);
+        updatedSong.getComposition().map(IdName::getId).map(id -> idNameService.getById(composition, id)).ifPresent(song::setComposition);
+        updatedSong.getTopics().map(idNames -> idNames.stream().map(IdName::getId).collect(toSet()))
+                .map(ids -> idNameService.getAllByIds(topic, ids)).ifPresent(song::setTopics);
+        updatedSong.getArrangement().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setArrangement);
+        updatedSong.getAdaptation().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
+        updatedSong.getMelody().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setMelody);
 
         return mongoOperations.update(Song.class)
                 .matching(query(where("id").is(songId)))
@@ -100,14 +96,11 @@ public class SongUpdateService {
         return file;
     }
 
-    public void removeSongFile(String songId, String fileCode) {
-//        mongoOperations.update(Song.class).apply()
-//        final var removeElement = new Update().pull("files", QueryBuilder.start("fileCode").is(fileCode).get());
-//        mongoOperations.update(Song.class)
-//                .matching(query(where("id").is(songId)))
-//                .apply(removeElement).first();
-//
+    public Song removeSongFile(String songId, String fileCode) {
+        final var query = query(where("id").is(songId));
+        final var update = new Update().pull("files", new Document().append("fileCode", fileCode));
 //        songFileService.removeSongFile(songId, fileCode);
+        return mongoOperations.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Song.class);
     }
 
     public void removeSongIdNameField(String fieldName) {

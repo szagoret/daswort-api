@@ -26,7 +26,7 @@ public class IdNameSongUtils {
     public static Optional<Field> findAnnotatedField(IdNameCollection collection) {
         requireNonNull(collection);
         return Stream.of(FieldUtils.getFieldsWithAnnotation(Song.class, CollectionName.class))
-                .filter(field -> field.getAnnotation(CollectionName.class).value().equals(collection.getName()))
+                .filter(field -> field.getAnnotation( CollectionName.class).value().equals(collection.getName()))
                 .findFirst();
     }
 }
