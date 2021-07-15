@@ -99,7 +99,7 @@ public class SongUpdateService {
     public Song removeSongFile(String songId, String fileCode) {
         final var query = query(where("id").is(songId));
         final var update = new Update().pull("files", new Document().append("fileCode", fileCode));
-//        songFileService.removeSongFile(songId, fileCode);
+        songFileService.removeSongFile(songId, fileCode);
         return mongoOperations.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Song.class);
     }
 

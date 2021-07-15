@@ -4,6 +4,7 @@ import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.service.storage.SongFileLocationResolver;
 import com.daswort.core.storage.FileResource;
 import com.daswort.core.storage.FileResourceBytes;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import static com.daswort.core.service.storage.SongFileLocationResolver.generate
 import static java.util.Objects.requireNonNull;
 
 @Service
+@RequiredArgsConstructor
 public class SongFileService {
 
     private final FileStorageService fileStorageService;
@@ -24,13 +26,6 @@ public class SongFileService {
 
     @Value("classpath:pdf-file.pdf")
     private Resource resourceFile;
-
-    public SongFileService(FileStorageService fileStorageService,
-                           SongFileLocationResolver songFileLocationResolver) {
-        this.fileStorageService = fileStorageService;
-        this.songFileLocationResolver = songFileLocationResolver;
-    }
-
 
     public String saveSongFile(String songId, FileResource fileResource) {
         final var fileCode = generateFileCode();
@@ -46,8 +41,7 @@ public class SongFileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
-//        return fileStorageService.get(songFileLocationResolver.apply(songId, fileCode));
+        return fileStorageService.get(songFileLocationResolver.apply(songId, fileCode));
     }
 
     public void removeSongFile(String songId, String fileCode) {
