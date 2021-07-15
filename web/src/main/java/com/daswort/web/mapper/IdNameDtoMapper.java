@@ -1,6 +1,8 @@
 package com.daswort.web.mapper;
 
+import com.daswort.core.entity.Author;
 import com.daswort.core.entity.IdName;
+import com.daswort.web.dto.AuthorDto;
 import com.daswort.web.dto.IdNameDto;
 
 import java.util.List;
@@ -25,5 +27,12 @@ public class IdNameDtoMapper {
                 .map(idNames -> idNames.stream().map(IdNameDtoMapper::toIdNameDto).collect(toList()))
                 .orElse(List.of());
 
+    }
+
+    public static IdNameDto toIdNameDto(Author authorDto) {
+        return IdNameDto.builder()
+                .id(authorDto.getId())
+                .name(String.format("%s %s", authorDto.getFirstName(), authorDto.getLastName()))
+                .build();
     }
 }

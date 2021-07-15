@@ -75,7 +75,7 @@ public class SongController {
     @PutMapping("/{songId}")
     public ResponseEntity<?> updateSong(@PathVariable String songId,
                                         @RequestBody SongUpdate request) {
-        return ResponseEntity.ok(songUpdateService.updateSong(request, songId));
+        return ResponseEntity.ok(toSongDto(songUpdateService.updateSong(request, songId)))  ;
     }
 
     @PutMapping("/{songId}/files")

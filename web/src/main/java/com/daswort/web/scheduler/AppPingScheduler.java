@@ -22,7 +22,7 @@ public class AppPingScheduler {
     }
 
 
-    @Scheduled(fixedRate = 60 * 1000 * 25)
+//    @Scheduled(fixedRate = 60 * 1000 * 25)
     public void ping() {
         restTemplate.getForEntity(Objects.requireNonNull(env.getProperty("daswort.ping.endpoint")), Object.class);
     }
