@@ -3,6 +3,7 @@ package com.daswort.web.controller;
 import com.daswort.core.entity.*;
 import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongUpdate;
+import com.daswort.core.pdf.SongPdfImageCreator;
 import com.daswort.core.service.author.AuthorService;
 import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
@@ -43,6 +44,7 @@ import static org.springframework.http.MediaType.parseMediaType;
 @RequiredArgsConstructor
 public class SongController {
 
+    private final SongPdfImageCreator songPdfImageCreator;
     private final SongSearchService songSearchService;
     private final SongUpdateService songUpdateService;
     private final CategoryService categoryService;
@@ -54,6 +56,12 @@ public class SongController {
     public ResponseEntity<SongDto> getSongById(@PathVariable String songId) {
         final var song = songSearchService.findSongById(songId).orElse(new Song());
         return ResponseEntity.ok(toSongDto(song));
+    }
+
+    @PostMapping("/{songId}/{fileCode}/preview")
+    public ResponseEntity<SongDto> createFilePreview(@PathVariable String songId, @PathVariable String fileCode) {
+        songPdfImageCreator.createPdfPreview(songId, fileCode);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/find")
@@ -75,7 +83,7 @@ public class SongController {
     @PutMapping("/{songId}")
     public ResponseEntity<?> updateSong(@PathVariable String songId,
                                         @RequestBody SongUpdate request) {
-        return ResponseEntity.ok(toSongDto(songUpdateService.updateSong(request, songId)))  ;
+        return ResponseEntity.ok(toSongDto(songUpdateService.updateSong(request, songId)));
     }
 
     @PutMapping("/{songId}/files")

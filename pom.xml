@@ -29,6 +29,7 @@
         <lombok.version>1.18.10</lombok.version>
         <aws-sdk.version>2.9.16</aws-sdk.version>
         <apache.commons.version>3.9</apache.commons.version>
+        <apache.pdfbox.version>2.0.22</apache.pdfbox.version>
     </properties>
 
     <dependencyManagement>
@@ -71,6 +72,16 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${apache.pdfbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox-tools</artifactId>
+                <version>${apache.pdfbox.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
