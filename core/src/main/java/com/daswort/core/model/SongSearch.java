@@ -1,5 +1,6 @@
 package com.daswort.core.model;
 
+import com.daswort.core.entity.IdName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,10 @@ public class SongSearch {
     private Set<String> difficultiesIds = new HashSet<>();
     private Set<String> topicsIds = new HashSet<>();
     private Set<String> authorsIds = new HashSet<>();
+
+    private Set<IdName> melody = new HashSet<>();
+    private Set<IdName> arrangement = new HashSet<>();
+    private Set<IdName> adaptation = new HashSet<>();
 
     @NonNull
     private Integer page;

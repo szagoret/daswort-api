@@ -1,5 +1,6 @@
 package com.daswort.core.specification;
 
+import com.daswort.core.entity.IdName;
 import com.daswort.core.model.SongSearch;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -64,6 +66,18 @@ public class SongSearchSpecification implements Specification<SongSearch> {
         // by difficulty
         if (songSearch.getDifficultiesIds().size() > 0) {
             criteriaFilters.add(where("difficulty._id").in(songSearch.getDifficultiesIds()));
+        }
+
+        if (songSearch.getMelody().size() > 0) {
+            criteriaFilters.add(where("melody._id").in(songSearch.getMelody().stream().map(IdName::getId).collect(Collectors.toSet())));
+        }
+
+        if (songSearch.getArrangement().size() > 0) {
+            criteriaFilters.add(where("arrangement._id").in(songSearch.getArrangement().stream().map(IdName::getId).collect(Collectors.toSet())));
+        }
+
+        if (songSearch.getAdaptation().size() > 0) {
+            criteriaFilters.add(where("adaptation._id").in(songSearch.getAdaptation().stream().map(IdName::getId).collect(Collectors.toSet())));
         }
 
         // build result search criteria

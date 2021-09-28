@@ -72,7 +72,7 @@ public class SongSearchService {
     }
 
 
-    @Cacheable(value = "songs", key = "#songSearch.name")
+//    @Cacheable(value = "songs", key = "#songSearch.name")
     public SongSearchResult advancedSearch(SongSearch songSearch, Pageable pageable) {
         requireNonNull(songSearch);
         requireNonNull(pageable);
@@ -80,9 +80,8 @@ public class SongSearchService {
         final var sortMap = new HashMap<String, String>();
         sortMap.put("name", "name");
         sortMap.put("arrangement", "arrangement.firstName");
-        sortMap.put("composition", "composition.name");
-        sortMap.put("difficulty", "difficulty.name");
-        sortMap.put("createdAt", "createdAt");
+        sortMap.put("melody", "melody.name");
+        sortMap.put("adaptation", "adaptation.name");
 
         String sortDirection = songSearch.getSortDirection();
         String sortProperty = songSearch.getSortProperty();
