@@ -8,12 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @Document
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author {
+public class Author implements Serializable {
 //    @MongoId(FieldType.OBJECT_ID)
     private String id;
     private String firstName;

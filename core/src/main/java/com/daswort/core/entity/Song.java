@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class Song {
+public class Song implements Serializable {
 
     @MongoId(FieldType.OBJECT_ID)
     private String id;

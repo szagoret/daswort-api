@@ -30,6 +30,7 @@
         <aws-sdk.version>2.9.16</aws-sdk.version>
         <apache.commons.version>3.9</apache.commons.version>
         <apache.pdfbox.version>2.0.22</apache.pdfbox.version>
+        <hazelcast.version>5.0</hazelcast.version>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +83,16 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox-tools</artifactId>
                 <version>${apache.pdfbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-spring</artifactId>
+                <version>${hazelcast.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

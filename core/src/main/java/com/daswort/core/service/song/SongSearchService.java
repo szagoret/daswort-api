@@ -8,6 +8,7 @@ import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
 import org.bson.types.ObjectId;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -71,6 +72,7 @@ public class SongSearchService {
     }
 
 
+    @Cacheable(value = "songs", key = "#songSearch.name")
     public SongSearchResult advancedSearch(SongSearch songSearch, Pageable pageable) {
         requireNonNull(songSearch);
         requireNonNull(pageable);
