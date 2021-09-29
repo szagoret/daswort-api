@@ -1,6 +1,5 @@
 package com.daswort.core.model;
 
-import com.daswort.core.entity.Author;
 import com.daswort.core.entity.IdName;
 import lombok.Builder;
 import lombok.Value;
@@ -19,9 +18,9 @@ public class SongUpdate {
     String name;
     IdName composition;
     List<IdName> topics;
-    Author melody;
-    Author arrangement;
-    Author adaptation;
+    IdName melody;
+    IdName arrangement;
+    IdName adaptation;
 
 
     public Optional<IdName> getComposition() {
@@ -32,15 +31,15 @@ public class SongUpdate {
         return ofNullable(topics);
     }
 
-    public Optional<Author> getMelody() {
+    public Optional<IdName> getMelody() {
         return ofNullable(melody);
     }
 
-    public Optional<Author> getArrangement() {
+    public Optional<IdName> getArrangement() {
         return ofNullable(arrangement);
     }
 
-    public Optional<Author> getAdaptation() {
+    public Optional<IdName> getAdaptation() {
         return ofNullable(adaptation);
     }
 }

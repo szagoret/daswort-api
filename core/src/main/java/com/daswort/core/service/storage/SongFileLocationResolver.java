@@ -18,9 +18,9 @@ public class SongFileLocationResolver implements BiFunction<String, String, Stri
     }
 
     @Override
-    public String apply(String songId, String fileCode) {
+    public String apply(String songCode, String fileCode) {
         requireNonNull(fileCode);
-        requireNonNull(songId);
-        return String.format(songFilesPathTemplate, songId, fileCode);
+        requireNonNull(songCode);
+        return String.format(songFilesPathTemplate, songCode, fileCode);
     }
 }

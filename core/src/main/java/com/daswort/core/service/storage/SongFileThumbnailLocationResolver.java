@@ -18,10 +18,10 @@ public class SongFileThumbnailLocationResolver implements TriFunction<String, St
     private final String thumbnailPathTemplate = join(DELIMITER, "%s", "thumbnails", "%s");
 
     @Override
-    public String apply(String songId, String parentFileCode, String thumbnailCode) {
+    public String apply(String songCode, String parentFileCode, String thumbnailCode) {
         requireNonNull(parentFileCode);
-        requireNonNull(songId);
-        final var parentSongPath = songFileLocationResolver.apply(songId, parentFileCode);
+        requireNonNull(songCode);
+        final var parentSongPath = songFileLocationResolver.apply(songCode, parentFileCode);
         return String.format(thumbnailPathTemplate, parentSongPath, thumbnailCode);
     }
 }

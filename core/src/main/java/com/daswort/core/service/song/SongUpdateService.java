@@ -1,5 +1,7 @@
 package com.daswort.core.service.song;
 
+import com.daswort.core.EntitySequenceName;
+import com.daswort.core.SequenceGenerator;
 import com.daswort.core.entity.*;
 import com.daswort.core.exception.SongNotFoundException;
 import com.daswort.core.model.SongUpdate;
@@ -40,23 +42,24 @@ public class SongUpdateService {
     private final IdNameService idNameService;
     private final AuthorRepository authorRepository;
     private final SongFileService songFileService;
+    private final SequenceGenerator sequenceGenerator;
 
-    public Song updateSong(SongUpdate updatedSong, String songId) {
+    public Song updateSong(SongUpdate updatedSong, String songCode) {
         requireNonNull(updatedSong);
-        requireNonNull(songId);
+        requireNonNull(songCode);
 
-        final var song = songSearchService.findSongById(songId).orElseThrow(SongNotFoundException::new);
+        final var song = songSearchService.findSongByCode(songCode).orElseThrow(SongNotFoundException::new);
         song.setName(updatedSong.getName());
 
         updatedSong.getComposition().map(IdName::getId).map(id -> idNameService.getById(composition, id)).ifPresent(song::setComposition);
         updatedSong.getTopics().map(idNames -> idNames.stream().map(IdName::getId).collect(toSet()))
                 .map(ids -> idNameService.getAllByIds(topic, ids)).ifPresent(song::setTopics);
-        updatedSong.getArrangement().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setArrangement);
-        updatedSong.getAdaptation().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
-        updatedSong.getMelody().map(Author::getId).flatMap(authorRepository::findById).ifPresent(song::setMelody);
+        updatedSong.getArrangement().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setArrangement);
+        updatedSong.getAdaptation().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
+        updatedSong.getMelody().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setMelody);
 
         return mongoOperations.update(Song.class)
-                .matching(query(where("id").is(songId)))
+                .matching(query(where("code").is(songCode)))
                 .replaceWith(song)
                 .withOptions(options().upsert().returnNew())
                 .as(Song.class)
@@ -65,23 +68,24 @@ public class SongUpdateService {
 
     public Song createSong(final SongUpdate createSong) {
         final var songToCreate = new Song();
+        songToCreate.setCode(sequenceGenerator.nextSequence(EntitySequenceName.song));
         songToCreate.setCreatedAt(Instant.now());
         final var song = songRepository.save(songToCreate);
         return updateSong(createSong, song.getId());
     }
 
 
-    public void removeSong(String songId) {
-        final var files = songRepository.findById(songId).map(Song::getFiles).orElse(Collections.emptyList());
-        files.forEach(file -> songFileService.removeSongFile(songId, file.getFileCode()));
-        songRepository.deleteById(songId);
+    public void removeSong(String songCode) {
+        final var files = songRepository.findSongByCode(songCode).map(Song::getFiles).orElse(Collections.emptyList());
+        files.forEach(file -> songFileService.removeSongFile(songCode, file.getFileCode()));
+        songRepository.deleteSongByCode(songCode);
     }
 
-    public File addSongFile(String songId, FileResource fileResource) {
-        requireNonNull(songId);
+    public File addSongFile(String songCode, FileResource fileResource) {
+        requireNonNull(songCode);
         requireNonNull(fileResource);
-        final var foundSong = songRepository.findById(songId).orElseThrow(SongNotFoundException::new);
-        final var fileCode = songFileService.saveSongFile(foundSong.getId(), fileResource);
+        final var foundSong = songRepository.findSongByCode(songCode).orElseThrow(SongNotFoundException::new);
+        final var fileCode = songFileService.saveSongFile(foundSong.getCode(), fileResource);
         final var file = File.builder()
                 .name(fileResource.getName())
                 .fileCode(fileCode)
@@ -96,10 +100,10 @@ public class SongUpdateService {
         return file;
     }
 
-    public Song removeSongFile(String songId, String fileCode) {
-        final var query = query(where("id").is(songId));
+    public Song removeSongFile(String songCode, String fileCode) {
+        final var query = query(where("code").is(songCode));
         final var update = new Update().pull("files", new Document().append("fileCode", fileCode));
-        songFileService.removeSongFile(songId, fileCode);
+        songFileService.removeSongFile(songCode, fileCode);
         return mongoOperations.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Song.class);
     }
 

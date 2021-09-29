@@ -45,23 +45,20 @@ public class SongSearchService {
         this.songSearchSpecification = songSearchSpecification;
     }
 
-    public Optional<Song> findSongById(String songId) {
-        if (!ObjectId.isValid(songId)) {
-            throw new SongNotFoundException();
-        }
-        return songRepository.findById(songId);
+    public Optional<Song> findSongByCode(String songCode) {
+        return songRepository.findSongByCode(songCode);
     }
 
     public List<Song> findSongsByName(String searchTerm) {
         return songRepository.findAllByQuery(searchTerm, PageRequest.of(0, 5));
     }
 
-    public File getSongFile(String songId, String songFileCode) {
-        requireNonNull(songId);
+    public File getSongFile(String songCode, String songFileCode) {
+        requireNonNull(songCode);
         requireNonNull(songFileCode);
 
         final var aggregationOperations = List.of(
-                new MatchOperation(where("id").is(songId)),
+                new MatchOperation(where("code").is(songCode)),
                 new ProjectionOperation(fields("files")),
                 new UnwindOperation(field("files")),
                 new ReplaceRootOperation(field("files")),

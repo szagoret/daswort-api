@@ -27,18 +27,18 @@ public class SongFileService {
     private final SongFileThumbnailLocationResolver songFileThumbnailLocationResolver;
     private final MongoOperations mongoOperations;
 
-    public String saveSongFile(String songId, FileResource fileResource) {
+    public String saveSongFile(String songCode, FileResource fileResource) {
         final var fileCode = generateFileCode();
-        fileStorageService.put(songFileLocationResolver.apply(songId, fileCode), fileResource);
+        fileStorageService.put(songFileLocationResolver.apply(songCode, fileCode), fileResource);
         return fileCode;
     }
 
-    public void saveSongThumbnail(String songId, String parentSongCode, FileResource fileResource) {
+    public void saveSongThumbnail(String songCode, String parentSongCode, FileResource fileResource) {
         final var fileCode = generateFileCode();
-        final var thumbnailFile = songFileThumbnailLocationResolver.apply(songId, parentSongCode, fileCode);
+        final var thumbnailFile = songFileThumbnailLocationResolver.apply(songCode, parentSongCode, fileCode);
         fileStorageService.put(thumbnailFile, fileResource);
 
-        final var query = new Query(where("_id").is(new ObjectId(songId)));
+        final var query = new Query(where("code").is(new ObjectId(songCode)));
         final var update = new Update()
                 .addToSet("files.$[e].thumbnails", fileCode)
                 .filterArray("e.fileCode", parentSongCode);
@@ -50,13 +50,13 @@ public class SongFileService {
     }
 
 
-    public Optional<FileResource> getSongFile(String songId, String fileCode) {
-        requireNonNull(songId, fileCode);
-        return fileStorageService.get(songFileLocationResolver.apply(songId, fileCode));
+    public Optional<FileResource> getSongFile(String songCode, String fileCode) {
+        requireNonNull(songCode, fileCode);
+        return fileStorageService.get(songFileLocationResolver.apply(songCode, fileCode));
     }
 
-    public void removeSongFile(String songId, String fileCode) {
-        requireNonNull(songId, fileCode);
-        fileStorageService.delete(songFileLocationResolver.apply(songId, fileCode));
+    public void removeSongFile(String songCode, String fileCode) {
+        requireNonNull(songCode, fileCode);
+        fileStorageService.delete(songFileLocationResolver.apply(songCode, fileCode));
     }
 }

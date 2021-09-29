@@ -16,6 +16,7 @@ public class SongDtoMapper {
         Objects.requireNonNull(song);
         return SongDto.builder()
                 .id(song.getId())
+                .code(song.getCode())
                 .name(song.getName())
                 .composition(toIdNameDto(song.getComposition()))
                 .difficulty(toIdNameDto(song.getDifficulty()))

@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class SongDto {
     private String id;
+    private String code;
     private String name;
     private IdNameDto composition;
     private IdNameDto difficulty;

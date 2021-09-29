@@ -52,15 +52,15 @@ public class SongController {
     private final IdNameService idNameService;
     private final AuthorService authorService;
 
-    @GetMapping("/{songId}")
-    public ResponseEntity<SongDto> getSongById(@PathVariable String songId) {
-        final var song = songSearchService.findSongById(songId).orElse(new Song());
-        return ResponseEntity.ok(toSongDto(song));
+    @GetMapping("/{songCode}")
+    public ResponseEntity<SongDto> getSongByCode(@PathVariable String songCode) {
+        final var song = songSearchService.findSongByCode(songCode);
+        return song.map(value -> ResponseEntity.ok(toSongDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{songId}/{fileCode}/preview")
-    public ResponseEntity<SongDto> createFilePreview(@PathVariable String songId, @PathVariable String fileCode) {
-        songPdfImageCreator.createPdfPreview(songId, fileCode);
+    @PostMapping("/{songCode}/{fileCode}/preview")
+    public ResponseEntity<SongDto> createFilePreview(@PathVariable String songCode, @PathVariable String fileCode) {
+        songPdfImageCreator.createPdfPreview(songCode, fileCode);
         return ResponseEntity.ok().build();
     }
 
@@ -80,33 +80,33 @@ public class SongController {
         return ResponseEntity.ok(songUpdateService.createSong(request));
     }
 
-    @PutMapping("/{songId}")
-    public ResponseEntity<?> updateSong(@PathVariable String songId,
+    @PutMapping("/{songCode}")
+    public ResponseEntity<?> updateSong(@PathVariable String songCode,
                                         @RequestBody SongUpdate request) {
-        return ResponseEntity.ok(toSongDto(songUpdateService.updateSong(request, songId)));
+        return ResponseEntity.ok(toSongDto(songUpdateService.updateSong(request, songCode)));
     }
 
-    @PutMapping("/{songId}/files")
-    public ResponseEntity<File> uploadSongFiles(@PathVariable String songId,
+    @PutMapping("/{songCode}/files")
+    public ResponseEntity<File> uploadSongFiles(@PathVariable String songCode,
                                                 @RequestParam("file") MultipartFile file) throws IOException {
-        final var savedFile = songUpdateService.addSongFile(songId, new FileResourceBytes(file.getBytes(), file.getOriginalFilename(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        final var savedFile = songUpdateService.addSongFile(songCode, new FileResourceBytes(file.getBytes(), file.getOriginalFilename(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
         return ResponseEntity.ok(savedFile);
     }
 
-    @GetMapping("/{songId}/files/{fileCode}")
-    public ResponseEntity<File> getSongFile(@PathVariable String songId,
+    @GetMapping("/{songCode}/files/{fileCode}")
+    public ResponseEntity<File> getSongFile(@PathVariable String songCode,
                                             @PathVariable String fileCode) {
-        final var file = songSearchService.getSongFile(songId, fileCode);
+        final var file = songSearchService.getSongFile(songCode, fileCode);
         return ResponseEntity.ok(file);
     }
 
-    @GetMapping("/{songId}/files/{fileCode}/download")
-    public ResponseEntity<?> downloadSongFile(@PathVariable String songId,
+    @GetMapping("/{songCode}/files/{fileCode}/download")
+    public ResponseEntity<?> downloadSongFile(@PathVariable String songCode,
                                               @PathVariable String fileCode) {
 
-        final var file = songSearchService.getSongFile(songId, fileCode);
+        final var file = songSearchService.getSongFile(songCode, fileCode);
 
-        return songFileService.getSongFile(songId, fileCode)
+        return songFileService.getSongFile(songCode, fileCode)
                 .map(fileResource ->
                         ResponseEntity.ok()
                                 .contentType(parseMediaType(fileResource.getContentType()))
@@ -120,16 +120,16 @@ public class SongController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{songId}")
-    public ResponseEntity<?> deleteSong(@PathVariable String songId) {
-        songUpdateService.removeSong(songId);
+    @DeleteMapping("/{songCode}")
+    public ResponseEntity<?> deleteSong(@PathVariable String songCode) {
+        songUpdateService.removeSong(songCode);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{songId}/files/{fileCode}")
-    public ResponseEntity<?> deleteSongFile(@PathVariable String songId,
+    @DeleteMapping("/{songCode}/files/{fileCode}")
+    public ResponseEntity<?> deleteSongFile(@PathVariable String songCode,
                                             @PathVariable String fileCode) {
-        return ResponseEntity.ok(songUpdateService.removeSongFile(songId, fileCode));
+        return ResponseEntity.ok(songUpdateService.removeSongFile(songCode, fileCode));
     }
 
     @PostMapping("/search")
