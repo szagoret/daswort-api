@@ -7,7 +7,6 @@ import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -18,13 +17,10 @@ import java.util.Set;
 public class File implements Serializable {
     String name;
     String extension;
-    String fileCode;
+    String code;
+    String path;
     Long size;
-    Set<String> thumbnails;
+    Set<String> lgThumbnails;
+    Set<String> smThumbnails;
     Boolean primary;
-
-    public void addThumbnail(String thumbnailCode) {
-        this.thumbnails = new HashSet<>(thumbnails);
-        thumbnails.add(thumbnailCode);
-    }
 }

@@ -3,13 +3,13 @@ package com.daswort.web.controller;
 import com.daswort.core.entity.*;
 import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongUpdate;
-import com.daswort.core.pdf.SongPdfImageCreator;
 import com.daswort.core.service.author.AuthorService;
 import com.daswort.core.service.category.CategoryService;
 import com.daswort.core.service.idname.IdNameService;
 import com.daswort.core.service.song.SongFileService;
 import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
+import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.storage.FileResourceBytes;
 import com.daswort.web.dto.song.SongDto;
 import com.daswort.web.dto.song.SongFiltersDto;
@@ -44,13 +44,13 @@ import static org.springframework.http.MediaType.parseMediaType;
 @RequiredArgsConstructor
 public class SongController {
 
-    private final SongPdfImageCreator songPdfImageCreator;
     private final SongSearchService songSearchService;
     private final SongUpdateService songUpdateService;
     private final CategoryService categoryService;
     private final SongFileService songFileService;
     private final IdNameService idNameService;
     private final AuthorService authorService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/{songCode}")
     public ResponseEntity<SongDto> getSongByCode(@PathVariable String songCode) {
@@ -60,7 +60,7 @@ public class SongController {
 
     @PostMapping("/{songCode}/{fileCode}/preview")
     public ResponseEntity<SongDto> createFilePreview(@PathVariable String songCode, @PathVariable String fileCode) {
-        songPdfImageCreator.createPdfPreview(songCode, fileCode);
+        songUpdateService.createSongFileThumbnails(songCode, fileCode);
         return ResponseEntity.ok().build();
     }
 
@@ -104,9 +104,7 @@ public class SongController {
     public ResponseEntity<?> downloadSongFile(@PathVariable String songCode,
                                               @PathVariable String fileCode) {
 
-        final var file = songSearchService.getSongFile(songCode, fileCode);
-
-        return songFileService.getSongFile(songCode, fileCode)
+        return songFileService.geFileResource(songCode, fileCode)
                 .map(fileResource ->
                         ResponseEntity.ok()
                                 .contentType(parseMediaType(fileResource.getContentType()))
@@ -114,6 +112,22 @@ public class SongController {
                                 .header(HttpHeaders.CONTENT_DISPOSITION,
                                         ContentDispositionBuilder.builder()
                                                 .filename(fileResource.getName())
+                                                .build()
+                                                .toString())
+                                .body(new InputStreamResource(fileResource.getInputStream())))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(value = "/preview", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getSongFilePreview(@RequestParam String path) {
+        return fileStorageService.get(path)
+                .map(fileResource ->
+                        ResponseEntity.ok()
+                                .contentType(MediaType.IMAGE_JPEG)
+                                .contentLength(fileResource.getContentLength())
+                                .header(HttpHeaders.CONTENT_DISPOSITION,
+                                        ContentDispositionBuilder.builder()
+                                                .filename(path.replace("/", "_"))
                                                 .build()
                                                 .toString())
                                 .body(new InputStreamResource(fileResource.getInputStream())))

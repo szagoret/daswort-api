@@ -2,7 +2,10 @@ package com.daswort.core.service.song;
 
 import com.daswort.core.EntitySequenceName;
 import com.daswort.core.SequenceGenerator;
-import com.daswort.core.entity.*;
+import com.daswort.core.entity.File;
+import com.daswort.core.entity.IdName;
+import com.daswort.core.entity.IdNameCollection;
+import com.daswort.core.entity.Song;
 import com.daswort.core.exception.SongNotFoundException;
 import com.daswort.core.model.SongUpdate;
 import com.daswort.core.repository.AuthorRepository;
@@ -22,9 +25,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static com.daswort.core.entity.IdNameCollection.composition;
 import static com.daswort.core.entity.IdNameCollection.topic;
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -77,7 +82,7 @@ public class SongUpdateService {
 
     public void removeSong(String songCode) {
         final var files = songRepository.findSongByCode(songCode).map(Song::getFiles).orElse(Collections.emptyList());
-        files.forEach(file -> songFileService.removeSongFile(songCode, file.getFileCode()));
+        files.forEach(file -> songFileService.removeSongFile(songCode, file.getCode()));
         songRepository.deleteSongByCode(songCode);
     }
 
@@ -85,12 +90,17 @@ public class SongUpdateService {
         requireNonNull(songCode);
         requireNonNull(fileResource);
         final var foundSong = songRepository.findSongByCode(songCode).orElseThrow(SongNotFoundException::new);
-        final var fileCode = songFileService.saveSongFile(foundSong.getCode(), fileResource);
+        final var fileExtension = FileUtils.getFileExtension(fileResource.getName());
+        final var sequence = sequenceGenerator.nextSequence(EntitySequenceName.file);
+        final var filePath = songFileService.saveSongFile(foundSong.getCode(), fileResource, sequence, fileExtension.orElse(""));
         final var file = File.builder()
                 .name(fileResource.getName())
-                .fileCode(fileCode)
-                .extension(FileUtils.getFileExtension(fileResource.getName()))
+                .code(format("%s%s", sequence, fileExtension.map(s -> "." + s).orElse("")))
+                .path(filePath)
+                .extension(fileExtension.orElse(""))
                 .size(fileResource.getContentLength())
+                .smThumbnails(Set.of())
+                .lgThumbnails(Set.of())
                 .build();
 
         final var query = new Query(where("id").is(foundSong.getId()));
@@ -100,9 +110,13 @@ public class SongUpdateService {
         return file;
     }
 
+    public void createSongFileThumbnails(String songCode, String fileCode) {
+        songFileService.createFileThumbnail(songCode, fileCode);
+    }
+
     public Song removeSongFile(String songCode, String fileCode) {
         final var query = query(where("code").is(songCode));
-        final var update = new Update().pull("files", new Document().append("fileCode", fileCode));
+        final var update = new Update().pull("files", new Document().append("code", fileCode));
         songFileService.removeSongFile(songCode, fileCode);
         return mongoOperations.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Song.class);
     }

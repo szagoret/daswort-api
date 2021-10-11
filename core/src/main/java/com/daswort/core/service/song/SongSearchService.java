@@ -7,6 +7,7 @@ import com.daswort.core.model.SongSearch;
 import com.daswort.core.model.SongSearchResult;
 import com.daswort.core.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -31,19 +32,12 @@ import static org.springframework.data.mongodb.core.aggregation.Fields.fields;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
+@RequiredArgsConstructor
 public class SongSearchService {
 
     private final MongoOperations mongoOperations;
     private final SongRepository songRepository;
     private final SongSearchSpecification songSearchSpecification;
-
-    public SongSearchService(MongoOperations mongoOperations,
-                             SongRepository songRepository,
-                             SongSearchSpecification songSearchSpecification) {
-        this.mongoOperations = mongoOperations;
-        this.songRepository = songRepository;
-        this.songSearchSpecification = songSearchSpecification;
-    }
 
     public Optional<Song> findSongByCode(String songCode) {
         return songRepository.findSongByCode(songCode);
@@ -62,7 +56,7 @@ public class SongSearchService {
                 new ProjectionOperation(fields("files")),
                 new UnwindOperation(field("files")),
                 new ReplaceRootOperation(field("files")),
-                new MatchOperation(where("fileCode").is(songFileCode))
+                new MatchOperation(where("code").is(songFileCode))
         );
 
         return mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getUniqueMappedResult();

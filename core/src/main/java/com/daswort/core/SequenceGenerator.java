@@ -21,11 +21,10 @@ public class SequenceGenerator {
 
         final Update u = new Update().inc("value", 1);
         final Sequence sequence = operations.findAndModify(q, u, FindAndModifyOptions.options().returnNew(true).upsert(true), Sequence.class);
-        return buildSequence(sequence);
+        return buildSequence(sequence, sequenceName);
     }
 
-    private String buildSequence(Sequence sequence) {
-        final var sequencePrefix = "noav";
-        return String.format("%s-%d", sequencePrefix, !Objects.isNull(sequence) ? sequence.getValue() : 10000);
+    private String buildSequence(Sequence sequence, EntitySequenceName sequenceName) {
+        return String.format("%s-%d", sequenceName.name(), !Objects.isNull(sequence) ? sequence.getValue() : 10000);
     }
 }
