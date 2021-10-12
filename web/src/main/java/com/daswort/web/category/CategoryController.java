@@ -1,4 +1,4 @@
-package com.daswort.web.controller;
+package com.daswort.web.category;
 
 import com.daswort.core.entity.Category;
 import com.daswort.core.service.category.CategoryService;

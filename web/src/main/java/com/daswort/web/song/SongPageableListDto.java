@@ -1,4 +1,4 @@
-package com.daswort.web.dto.song;
+package com.daswort.web.song;
 
 import lombok.Builder;
 import lombok.Data;

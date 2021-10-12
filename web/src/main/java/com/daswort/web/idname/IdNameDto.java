@@ -1,4 +1,4 @@
-package com.daswort.web.dto;
+package com.daswort.web.idname;
 
 import lombok.Builder;
 import lombok.Data;

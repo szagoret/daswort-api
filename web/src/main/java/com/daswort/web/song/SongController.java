@@ -1,4 +1,4 @@
-package com.daswort.web.controller;
+package com.daswort.web.song;
 
 import com.daswort.core.entity.*;
 import com.daswort.core.model.SongSearch;
@@ -11,12 +11,7 @@ import com.daswort.core.service.song.SongSearchService;
 import com.daswort.core.service.song.SongUpdateService;
 import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.storage.FileResourceBytes;
-import com.daswort.web.dto.song.SongDto;
-import com.daswort.web.dto.song.SongFiltersDto;
-import com.daswort.web.dto.song.SongPageableListDto;
-import com.daswort.web.dto.song.SongSearchSuggestion;
-import com.daswort.web.mapper.AuthorIdNameDtoMapper;
-import com.daswort.web.mapper.SongDtoMapper;
+import com.daswort.web.author.AuthorIdNameDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -31,9 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static com.daswort.web.builder.SongPathBuilder.buildPath;
-import static com.daswort.web.mapper.IdNameDtoMapper.toIdNameDto;
-import static com.daswort.web.mapper.SongDtoMapper.toSongDto;
+import static com.daswort.web.idname.IdNameDtoMapper.toIdNameDto;
+import static com.daswort.web.song.SongDtoMapper.toSongDto;
+import static com.daswort.web.song.SongPathBuilder.buildPath;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.parseMediaType;
@@ -58,12 +53,6 @@ public class SongController {
         return song.map(value -> ResponseEntity.ok(toSongDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{songCode}/{fileCode}/preview")
-    public ResponseEntity<SongDto> createFilePreview(@PathVariable String songCode, @PathVariable String fileCode) {
-        songUpdateService.createSongFileThumbnails(songCode, fileCode);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/find")
     public List<SongSearchSuggestion> findSongsByName(@RequestParam(defaultValue = "") String searchTerm) {
         List<Song> songsByName = songSearchService.findSongsByName(searchTerm);
@@ -73,6 +62,25 @@ public class SongController {
                         .path(buildPath(categoryService.getCategoryParentTreePath(ofNullable(song.getCategory()).map(Category::getId).orElse(null))))
                         .build()
                 ).collect(toList());
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<SongPageableListDto> advancedSearch(@RequestBody @Validated SongSearch songSearch) {
+        final var songSearchResult = songSearchService.advancedSearch(songSearch, PageRequest.of(songSearch.getPage(), songSearch.getSize()));
+        final var songsDtos = songSearchResult.getSongList().stream().map(SongDtoMapper::toSongDto).collect(toList());
+        var result = SongPageableListDto.builder()
+                .songs(songsDtos)
+                .page(songSearchResult.getPageable().getPageNumber())
+                .size(songSearchResult.getPageable().getPageSize())
+                .total(songSearchResult.getTotalCount())
+                .build();
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/{songCode}/{fileCode}/thumbnail")
+    public ResponseEntity<SongDto> createSongFileThumbnails(@PathVariable String songCode, @PathVariable String fileCode) {
+        songUpdateService.createSongFileThumbnails(songCode, fileCode);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
@@ -96,15 +104,14 @@ public class SongController {
     @GetMapping("/{songCode}/files/{fileCode}")
     public ResponseEntity<File> getSongFile(@PathVariable String songCode,
                                             @PathVariable String fileCode) {
-        final var file = songSearchService.getSongFile(songCode, fileCode);
-        return ResponseEntity.ok(file);
+        return ResponseEntity.of(songSearchService.getSongFile(songCode, fileCode));
     }
 
     @GetMapping("/{songCode}/files/{fileCode}/download")
     public ResponseEntity<?> downloadSongFile(@PathVariable String songCode,
                                               @PathVariable String fileCode) {
 
-        return songFileService.geFileResource(songCode, fileCode)
+        return songFileService.getFileResource(songCode, fileCode)
                 .map(fileResource ->
                         ResponseEntity.ok()
                                 .contentType(parseMediaType(fileResource.getContentType()))
@@ -118,7 +125,7 @@ public class SongController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(value = "/preview", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/thumbnail", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getSongFilePreview(@RequestParam String path) {
         return fileStorageService.get(path)
                 .map(fileResource ->
@@ -144,19 +151,6 @@ public class SongController {
     public ResponseEntity<?> deleteSongFile(@PathVariable String songCode,
                                             @PathVariable String fileCode) {
         return ResponseEntity.ok(songUpdateService.removeSongFile(songCode, fileCode));
-    }
-
-    @PostMapping("/search")
-    public ResponseEntity<SongPageableListDto> advancedSearch(@RequestBody @Validated SongSearch songSearch) {
-        final var songSearchResult = songSearchService.advancedSearch(songSearch, PageRequest.of(songSearch.getPage(), songSearch.getSize()));
-        final var songsDtos = songSearchResult.getSongList().stream().map(SongDtoMapper::toSongDto).collect(toList());
-        var result = SongPageableListDto.builder()
-                .songs(songsDtos)
-                .page(songSearchResult.getPageable().getPageNumber())
-                .size(songSearchResult.getPageable().getPageSize())
-                .total(songSearchResult.getTotalCount())
-                .build();
-        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/filters")

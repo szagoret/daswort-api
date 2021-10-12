@@ -39,7 +39,7 @@ public class SongFileService {
     }
 
     public void createFileThumbnail(String songCode, String originalFileCode) {
-        geFileResource(songCode, originalFileCode).ifPresent(fileResource ->
+        getFileResource(songCode, originalFileCode).ifPresent(fileResource ->
                 List.of(ThumbnailType.SM, ThumbnailType.LG).forEach(thumbnailType -> {
                     final Integer pageIndex = 0;
                     final var byteArrayOutputStream = songThumbnailService.createSongThumbnail(fileResource, pageIndex, thumbnailType);
@@ -71,9 +71,14 @@ public class SongFileService {
     }
 
 
-    public Optional<FileResource> geFileResource(String songCode, String fileCode) {
+    public Optional<FileResource> getFileResource(String songCode, String fileCode) {
         requireNonNull(songCode, fileCode);
         return fileStorageService.get(songFilePathBuilder.build(songCode, fileCode));
+    }
+
+    public void removeSongFile(String filePath) {
+        requireNonNull(filePath);
+        fileStorageService.delete(filePath);
     }
 
     public void removeSongFile(String songCode, String fileCode) {

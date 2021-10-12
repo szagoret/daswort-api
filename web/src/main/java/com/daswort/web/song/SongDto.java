@@ -1,7 +1,7 @@
-package com.daswort.web.dto.song;
+package com.daswort.web.song;
 
 import com.daswort.core.entity.File;
-import com.daswort.web.dto.IdNameDto;
+import com.daswort.web.idname.IdNameDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Builder
 public class SongDto {
-    private String id;
     private String code;
     private String name;
     private IdNameDto composition;

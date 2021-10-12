@@ -1,4 +1,4 @@
-package com.daswort.web.controller;
+package com.daswort.web.author;
 
 import com.daswort.core.entity.Author;
 import com.daswort.core.service.author.AuthorService;

@@ -1,6 +1,6 @@
-package com.daswort.web.dto.song;
+package com.daswort.web.song;
 
-import com.daswort.web.dto.IdNameDto;
+import com.daswort.web.idname.IdNameDto;
 import lombok.Builder;
 import lombok.Data;
 

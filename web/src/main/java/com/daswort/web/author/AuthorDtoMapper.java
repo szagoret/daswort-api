@@ -1,7 +1,6 @@
-package com.daswort.web.mapper;
+package com.daswort.web.author;
 
 import com.daswort.core.entity.Author;
-import com.daswort.web.dto.AuthorDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

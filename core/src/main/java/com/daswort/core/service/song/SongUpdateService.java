@@ -32,6 +32,7 @@ import static com.daswort.core.entity.IdNameCollection.topic;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.data.mongodb.core.FindAndReplaceOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -72,17 +73,21 @@ public class SongUpdateService {
     }
 
     public Song createSong(final SongUpdate createSong) {
-        final var songToCreate = new Song();
-        songToCreate.setCode(sequenceGenerator.nextSequence(EntitySequenceName.song));
-        songToCreate.setCreatedAt(Instant.now());
-        final var song = songRepository.save(songToCreate);
+        final var newSong = new Song();
+        newSong.setCode(sequenceGenerator.nextSequence(EntitySequenceName.song));
+        newSong.setCreatedAt(Instant.now());
+        final var song = songRepository.save(newSong);
         return updateSong(createSong, song.getId());
     }
 
 
     public void removeSong(String songCode) {
         final var files = songRepository.findSongByCode(songCode).map(Song::getFiles).orElse(Collections.emptyList());
-        files.forEach(file -> songFileService.removeSongFile(songCode, file.getCode()));
+        files.forEach(file -> {
+            songFileService.removeSongFile(songCode, file.getCode());
+            ofNullable(file.getLgThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
+            ofNullable(file.getSmThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
+        });
         songRepository.deleteSongByCode(songCode);
     }
 
@@ -117,7 +122,14 @@ public class SongUpdateService {
     public Song removeSongFile(String songCode, String fileCode) {
         final var query = query(where("code").is(songCode));
         final var update = new Update().pull("files", new Document().append("code", fileCode));
-        songFileService.removeSongFile(songCode, fileCode);
+
+        songSearchService.getSongFile(songCode, fileCode).ifPresent(file -> {
+            songFileService.removeSongFile(songCode, fileCode);
+            ofNullable(file.getLgThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
+            ofNullable(file.getSmThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
+        });
+
+
         return mongoOperations.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Song.class);
     }
 

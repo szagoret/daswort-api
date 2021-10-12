@@ -1,13 +1,12 @@
-package com.daswort.web.mapper;
+package com.daswort.web.song;
 
 import com.daswort.core.entity.Song;
-import com.daswort.web.dto.song.SongDto;
 
 import java.util.List;
 import java.util.Objects;
 
-import static com.daswort.web.mapper.AuthorDtoMapper.toAuthorDto;
-import static com.daswort.web.mapper.IdNameDtoMapper.toIdNameDto;
+import static com.daswort.web.author.AuthorDtoMapper.toAuthorDto;
+import static com.daswort.web.idname.IdNameDtoMapper.toIdNameDto;
 import static java.util.Optional.ofNullable;
 
 public class SongDtoMapper {
@@ -15,7 +14,6 @@ public class SongDtoMapper {
     public static SongDto toSongDto(Song song) {
         Objects.requireNonNull(song);
         return SongDto.builder()
-                .id(song.getId())
                 .code(song.getCode())
                 .name(song.getName())
                 .composition(toIdNameDto(song.getComposition()))

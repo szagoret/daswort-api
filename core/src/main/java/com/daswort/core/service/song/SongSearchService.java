@@ -47,7 +47,7 @@ public class SongSearchService {
         return songRepository.findAllByQuery(searchTerm, PageRequest.of(0, 5));
     }
 
-    public File getSongFile(String songCode, String songFileCode) {
+    public Optional<File> getSongFile(String songCode, String songFileCode) {
         requireNonNull(songCode);
         requireNonNull(songFileCode);
 
@@ -59,7 +59,7 @@ public class SongSearchService {
                 new MatchOperation(where("code").is(songFileCode))
         );
 
-        return mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getUniqueMappedResult();
+        return Optional.ofNullable(mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getUniqueMappedResult());
     }
 
 
