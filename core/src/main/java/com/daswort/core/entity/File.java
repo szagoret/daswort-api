@@ -7,6 +7,8 @@ import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -23,4 +25,5 @@ public class File implements Serializable {
     Set<String> lgThumbnails;
     Set<String> smThumbnails;
     Boolean primary;
+    Instant uploadedAt;
 }

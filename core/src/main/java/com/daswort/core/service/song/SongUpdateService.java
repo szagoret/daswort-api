@@ -77,7 +77,7 @@ public class SongUpdateService {
         newSong.setCode(sequenceGenerator.nextSequence(EntitySequenceName.song));
         newSong.setCreatedAt(Instant.now());
         final var song = songRepository.save(newSong);
-        return updateSong(createSong, song.getId());
+        return updateSong(createSong, song.getCode());
     }
 
 
@@ -106,6 +106,7 @@ public class SongUpdateService {
                 .size(fileResource.getContentLength())
                 .smThumbnails(Set.of())
                 .lgThumbnails(Set.of())
+                .uploadedAt(Instant.now())
                 .build();
 
         final var query = new Query(where("id").is(foundSong.getId()));

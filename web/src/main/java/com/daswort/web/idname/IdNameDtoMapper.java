@@ -28,9 +28,14 @@ public class IdNameDtoMapper {
     }
 
     public static IdNameDto toIdNameDto(Author authorDto) {
-        return IdNameDto.builder()
-                .id(authorDto.getId())
-                .name(String.format("%s %s", authorDto.getFirstName(), authorDto.getLastName()))
-                .build();
+        if(authorDto != null) {
+            return IdNameDto.builder()
+                    .id(authorDto.getId())
+                    .name(String.format("%s %s", authorDto.getFirstName(), authorDto.getLastName()))
+                    .build();
+        } else {
+            return IdNameDto.builder().build();
+        }
+
     }
 }

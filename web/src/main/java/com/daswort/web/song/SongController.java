@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.daswort.web.idname.IdNameDtoMapper.toIdNameDto;
@@ -51,6 +52,12 @@ public class SongController {
     public ResponseEntity<SongDto> getSongByCode(@PathVariable String songCode) {
         final var song = songSearchService.findSongByCode(songCode);
         return song.map(value -> ResponseEntity.ok(toSongDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{songCode}/files")
+    public ResponseEntity<List<File>> getFilesBySongCode(@PathVariable String songCode) {
+        final var song = songSearchService.findSongByCode(songCode);
+        return song.map(value -> ResponseEntity.ok(value.getFiles().stream().sorted(Comparator.comparing(File::getUploadedAt)).collect(toList()))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/find")
