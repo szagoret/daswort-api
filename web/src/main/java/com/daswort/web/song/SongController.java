@@ -56,8 +56,8 @@ public class SongController {
 
     @GetMapping("/{songCode}/files")
     public ResponseEntity<List<File>> getFilesBySongCode(@PathVariable String songCode) {
-        final var song = songSearchService.findSongByCode(songCode);
-        return song.map(value -> ResponseEntity.ok(value.getFiles().stream().sorted(Comparator.comparing(File::getUploadedAt)).collect(toList()))).orElseGet(() -> ResponseEntity.notFound().build());
+        final var songDto = songSearchService.findSongByCode(songCode).map(SongDtoMapper::toSongDto);
+        return songDto.map(value -> ResponseEntity.ok(value.getFiles().stream().sorted(Comparator.comparing(File::getUploadedAt)).collect(toList()))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/find")
@@ -87,6 +87,12 @@ public class SongController {
     @PostMapping("/{songCode}/{fileCode}/thumbnail")
     public ResponseEntity<SongDto> createSongFileThumbnails(@PathVariable String songCode, @PathVariable String fileCode) {
         songUpdateService.createSongFileThumbnails(songCode, fileCode);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{songCode}/{fileCode}/primary")
+    public ResponseEntity<?> makeSongFilePrimary(@PathVariable String songCode, @PathVariable String fileCode) {
+        songUpdateService.makeFilePrimary(songCode, fileCode);
         return ResponseEntity.ok().build();
     }
 

@@ -72,6 +72,11 @@ public class SongUpdateService {
                 .findAndReplaceValue();
     }
 
+    public void makeFilePrimary(String songCode, String fileCode) {
+        mongoOperations.updateFirst(query(where("code").is(songCode)), new Update().set("files.$[].primary", false), Song.class);
+        mongoOperations.updateFirst(query(where("code").is(songCode).and("files.code").is(fileCode)), new Update().set("files.$.primary", true), Song.class);
+    }
+
     public Song createSong(final SongUpdate createSong) {
         final var newSong = new Song();
         newSong.setCode(sequenceGenerator.nextSequence(EntitySequenceName.song));
