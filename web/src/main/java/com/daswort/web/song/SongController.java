@@ -91,8 +91,11 @@ public class SongController {
     }
 
     @PostMapping("/{songCode}/{fileCode}/primary")
-    public ResponseEntity<?> makeSongFilePrimary(@PathVariable String songCode, @PathVariable String fileCode) {
-        songUpdateService.makeFilePrimary(songCode, fileCode);
+    public ResponseEntity<?> makeSongFilePrimary(@PathVariable String songCode,
+                                                 @PathVariable String fileCode,
+                                                 @RequestParam(value = "isPrimary", required = false, defaultValue = "true")
+                                                         boolean isPrimary) {
+        songUpdateService.makeFilePrimary(songCode, fileCode, isPrimary);
         return ResponseEntity.ok().build();
     }
 
