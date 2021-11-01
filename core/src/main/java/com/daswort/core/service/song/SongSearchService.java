@@ -61,6 +61,20 @@ public class SongSearchService {
 
         return Optional.ofNullable(mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getUniqueMappedResult());
     }
+    public Optional<File> getSongFileByName(String songCode, String songFileName) {
+        requireNonNull(songCode);
+        requireNonNull(songFileName);
+
+        final var aggregationOperations = List.of(
+                new MatchOperation(where("code").is(songCode)),
+                new ProjectionOperation(fields("files")),
+                new UnwindOperation(field("files")),
+                new ReplaceRootOperation(field("files")),
+                new MatchOperation(where("name").is(songFileName))
+        );
+
+        return mongoOperations.aggregate(newAggregation(aggregationOperations), Song.class, File.class).getMappedResults().stream().findFirst();
+    }
 
 
 //    @Cacheable(value = "songs", key = "#songSearch.name")

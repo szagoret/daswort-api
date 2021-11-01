@@ -40,7 +40,7 @@ public class SongFileService {
     }
 
     public void createFileThumbnail(String songCode, String originalFileCode) {
-        getSongFileResource(songCode, originalFileCode).ifPresent(fileResource ->
+        getSongFileResourceByCode(songCode, originalFileCode).ifPresent(fileResource ->
                 List.of(ThumbnailType.SM, ThumbnailType.LG).forEach(thumbnailType -> {
                     final Integer pageIndex = 0;
                     final var byteArrayOutputStream = songThumbnailService.createSongThumbnail(fileResource, pageIndex, thumbnailType);
@@ -72,14 +72,32 @@ public class SongFileService {
     }
 
 
-    public Optional<SongFileResource> getSongFileResource(String songCode, String fileCode) {
+    public Optional<SongFileResource> getSongFileResourceByCode(String songCode, String fileCode) {
         requireNonNull(songCode, fileCode);
         final Optional<File> songFileOpt = songSearchService.getSongFile(songCode, fileCode);
         if (songFileOpt.isEmpty()) {
             return Optional.empty();
         }
         final File songFile = songFileOpt.get();
-        final Optional<FileResource> fileResourceOpt = fileStorageService.get(songFilePathBuilder.build(songCode, fileCode));
+        final Optional<FileResource> fileResourceOpt = fileStorageService.get(songFilePathBuilder.build(songCode, songFile.getCode()));
+        if (fileResourceOpt.isEmpty()) {
+            return Optional.empty();
+
+        }
+        return Optional.of(SongFileResource.builder()
+                .file(songFile)
+                .fileResource(fileResourceOpt.get())
+                .build());
+    }
+
+    public Optional<SongFileResource> getSongFileResource(String songCode, String fileName) {
+        requireNonNull(songCode, fileName);
+        final Optional<File> songFileOpt = songSearchService.getSongFileByName(songCode, fileName);
+        if (songFileOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        final File songFile = songFileOpt.get();
+        final Optional<FileResource> fileResourceOpt = fileStorageService.get(songFilePathBuilder.build(songCode, songFile.getCode()));
         if (fileResourceOpt.isEmpty()) {
             return Optional.empty();
         }

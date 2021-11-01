@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.daswort.core.entity.IdNameCollection.composition;
@@ -60,9 +61,27 @@ public class SongUpdateService {
         updatedSong.getComposition().map(IdName::getId).map(id -> idNameService.getById(composition, id)).ifPresent(song::setComposition);
         updatedSong.getTopics().map(idNames -> idNames.stream().map(IdName::getId).collect(toSet()))
                 .map(ids -> idNameService.getAllByIds(topic, ids)).ifPresent(song::setTopics);
-        updatedSong.getArrangement().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setArrangement);
-        updatedSong.getAdaptation().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
-        updatedSong.getMelody().map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setMelody);
+        final Optional<IdName> optArrangement = updatedSong.getArrangement();
+        if (optArrangement.isPresent()) {
+            optArrangement.map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setArrangement);
+        } else {
+            song.setArrangement(null);
+        }
+
+        final Optional<IdName> optAdaptation = updatedSong.getAdaptation();
+        if (optAdaptation.isPresent()) {
+            optAdaptation.map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setAdaptation);
+        } else {
+            song.setAdaptation(null);
+        }
+
+        final Optional<IdName> optMelody = updatedSong.getMelody();
+        if (optMelody.isPresent()) {
+            optAdaptation.map(IdName::getId).flatMap(authorRepository::findById).ifPresent(song::setMelody);
+        } else {
+            song.setMelody(null);
+        }
+
 
         return mongoOperations.update(Song.class)
                 .matching(query(where("code").is(songCode)))

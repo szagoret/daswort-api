@@ -14,7 +14,8 @@ import com.daswort.core.storage.FileResourceBytes;
 import com.daswort.web.author.AuthorIdNameDtoMapper;
 import com.daswort.web.util.ContentDispositionBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,9 +33,8 @@ import static com.daswort.web.song.SongDtoMapper.toSongDto;
 import static com.daswort.web.song.SongPathBuilder.buildPath;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.MediaType.parseMediaType;
 
-@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io", "https://daswort.gitlab.io"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io", "https://daswort.gitlab.io", "http://192.168.1.38:3000", "http://192.168.1.38:3000/daswort-ui"})
 @RestController
 @RequestMapping("/song")
 @RequiredArgsConstructor
@@ -123,38 +123,54 @@ public class SongController {
         return ResponseEntity.of(songSearchService.getSongFile(songCode, fileCode));
     }
 
-    @GetMapping("/{songCode}/files/{fileCode}/download")
+    @GetMapping("/{songCode}/files/download/{fileName}")
     public ResponseEntity<?> downloadSongFile(@PathVariable String songCode,
-                                              @PathVariable String fileCode) {
+                                              @PathVariable String fileName) {
 
-        return songFileService.getFileResource(songCode, fileCode)
-                .map(fileResource ->
-                        ResponseEntity.ok()
-                                .contentType(parseMediaType(fileResource.getContentType()))
-                                .contentLength(fileResource.getContentLength())
-                                .header(HttpHeaders.CONTENT_DISPOSITION,
-                                        ContentDispositionBuilder.builder()
-                                                .filename(fileResource.getName())
-                                                .build()
-                                                .toString())
-                                .body(new InputStreamResource(fileResource.getInputStream())))
+        return songFileService.getSongFileResource(songCode, fileName)
+                .map(fileResource -> {
+                    byte[] s;
+                    try {
+                        s = IOUtils.toByteArray(fileResource.getFileResource().getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        s = new byte[0];
+                    }
+                    return ResponseEntity.ok()
+//                            .contentType(parseMediaType(fileResource.getContentType()))
+                            .contentType(MediaType.APPLICATION_PDF)
+                            .contentLength(fileResource.getFileResource().getContentLength())
+                            .header(HttpHeaders.CONTENT_DISPOSITION,
+                                    ContentDispositionBuilder.builder()
+                                            .filename(fileResource.getFile().getName())
+                                            .build()
+                                            .toString())
+                            .body(new ByteArrayResource(s));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/thumbnail", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getSongFilePreview(@RequestParam String path) {
         return fileStorageService.get(path)
-                .map(fileResource ->
-                        ResponseEntity.ok()
-                                .contentType(MediaType.IMAGE_JPEG)
-                                .contentLength(fileResource.getContentLength())
-                                .header(HttpHeaders.CONTENT_DISPOSITION,
-                                        ContentDispositionBuilder.builder()
-                                                .filename(path.replace("/", "_"))
-                                                .build()
-                                                .toString())
-                                .body(new InputStreamResource(fileResource.getInputStream())))
-                .orElse(ResponseEntity.notFound().build());
+                .map(fileResource -> {
+                    byte[] s;
+                    try {
+                        s = IOUtils.toByteArray(fileResource.getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        s = new byte[0];
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.IMAGE_JPEG)
+                            .contentLength(fileResource.getContentLength())
+                            .header(HttpHeaders.CONTENT_DISPOSITION,
+                                    ContentDispositionBuilder.builder()
+                                            .filename(path.replace("/", "_"))
+                                            .build()
+                                            .toString())
+                            .body(s);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{songCode}")
