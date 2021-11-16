@@ -1,10 +1,10 @@
 package com.daswort.core.service.category;
 
-import com.daswort.core.entity.Category;
-import com.daswort.core.entity.Song;
-import com.daswort.core.exception.CategoryNotFoundException;
-import com.daswort.core.exception.CategoryReferenceException;
-import com.daswort.core.repository.CategoryRepository;
+import com.daswort.core.song.domain.Category;
+import com.daswort.core.song.domain.Song;
+import com.daswort.core.song.exception.CategoryNotFoundException;
+import com.daswort.core.song.exception.CategoryReferenceException;
+import com.daswort.core.song.repository.CategoryRepository;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;

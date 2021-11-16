@@ -1,6 +1,6 @@
 package com.daswort.web.author;
 
-import com.daswort.core.entity.Author;
+import com.daswort.core.song.domain.Author;
 import com.daswort.web.idname.IdNameDto;
 
 import java.util.List;

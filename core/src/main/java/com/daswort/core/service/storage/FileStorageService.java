@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.s3.model.*;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static software.amazon.awssdk.core.sync.RequestBody.fromContentProvider;
+import static software.amazon.awssdk.core.sync.RequestBody.fromBytes;
 
 @Service
 public class FileStorageService {
@@ -54,7 +54,7 @@ public class FileStorageService {
                 .key(location)
                 .build();
         try {
-            s3Client.putObject(putRequest, fromContentProvider(fileResource::getInputStream, fileResource.getContentLength(), fileResource.getContentType()));
+            s3Client.putObject(putRequest, fromBytes(fileResource.getBytes()));
         } catch (S3Exception e) {
             throw new FileStorageException(e);
         }

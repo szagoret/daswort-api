@@ -1,6 +1,6 @@
 package com.daswort.web.author;
 
-import com.daswort.core.entity.Author;
+import com.daswort.core.song.domain.Author;
 import com.daswort.core.service.author.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

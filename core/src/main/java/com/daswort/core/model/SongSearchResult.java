@@ -1,6 +1,6 @@
 package com.daswort.core.model;
 
-import com.daswort.core.entity.Song;
+import com.daswort.core.song.domain.Song;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package com.daswort.core.service.category;
 
-import com.daswort.core.entity.Category;
-import com.daswort.core.exception.CategoryNotFoundException;
+import com.daswort.core.song.domain.Category;
+import com.daswort.core.song.exception.CategoryNotFoundException;
 import org.bson.Document;
 
 import java.util.Deque;

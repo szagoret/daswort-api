@@ -1,9 +1,9 @@
 package com.daswort.core.service.author;
 
-import com.daswort.core.entity.Author;
-import com.daswort.core.entity.Song;
-import com.daswort.core.exception.AuthorNotFoundException;
-import com.daswort.core.exception.AuthorReferenceException;
+import com.daswort.core.song.domain.Author;
+import com.daswort.core.song.domain.Song;
+import com.daswort.core.song.exception.AuthorNotFoundException;
+import com.daswort.core.song.exception.AuthorReferenceException;
 import com.daswort.core.repository.AuthorRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;

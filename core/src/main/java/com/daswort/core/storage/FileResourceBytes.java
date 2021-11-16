@@ -1,8 +1,5 @@
 package com.daswort.core.storage;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 public class FileResourceBytes implements FileResource {
 
     private final byte[] byteArray;
@@ -31,13 +28,12 @@ public class FileResourceBytes implements FileResource {
     }
 
     @Override
-    public InputStream getInputStream() {
-        return new ByteArrayInputStream(byteArray);
-    }
-
-    @Override
     public String getName() {
         return name;
     }
 
+    @Override
+    public byte[] getBytes() {
+        return byteArray;
+    }
 }

@@ -1,6 +1,6 @@
 package com.daswort.web.song;
 
-import com.daswort.core.entity.Category;
+import com.daswort.core.song.domain.Category;
 import com.daswort.web.idname.IdNameDto;
 
 import java.util.List;

@@ -9,6 +9,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.net.URI;
+import java.util.Objects;
 
 @Configuration
 public class FileStorageConfig {
@@ -32,7 +33,7 @@ public class FileStorageConfig {
     public S3Client localS3Client() {
         return S3Client.builder()
                 .region(Region.of(env.getProperty("daswort.aws.region", "eu-central-1")))
-                .endpointOverride(URI.create(env.getProperty("daswort.aws.s3.endpoint"))).build();
+                .endpointOverride(URI.create(Objects.requireNonNull(env.getProperty("daswort.aws.s3.endpoint")))).build();
     }
 
 

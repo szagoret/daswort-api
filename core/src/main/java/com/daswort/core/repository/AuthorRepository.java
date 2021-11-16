@@ -1,6 +1,6 @@
 package com.daswort.core.repository;
 
-import com.daswort.core.entity.Author;
+import com.daswort.core.song.domain.Author;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

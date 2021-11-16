@@ -1,6 +1,6 @@
 package com.daswort.web.category;
 
-import com.daswort.core.entity.Category;
+import com.daswort.core.song.domain.Category;
 import com.daswort.core.service.category.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
