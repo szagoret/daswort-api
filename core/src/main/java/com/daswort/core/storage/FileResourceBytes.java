@@ -28,11 +28,6 @@ public class FileResourceBytes implements FileResource {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public byte[] getBytes() {
         return byteArray;
     }

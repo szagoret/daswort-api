@@ -38,7 +38,7 @@ public class SongFileController {
     @PutMapping
     public ResponseEntity<SongFile> uploadSongFiles(@PathVariable String songCode,
                                                     @RequestParam("file") MultipartFile file) throws IOException {
-        final var savedFile = songFileService.addSongFile(songCode, new FileResourceBytes(file.getBytes(), file.getOriginalFilename(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        final var savedFile = songFileService.addSongFile(songCode, file.getOriginalFilename(), new FileResourceBytes(file.getBytes(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
         return ResponseEntity.of(savedFile);
     }
 
@@ -59,7 +59,7 @@ public class SongFileController {
     @DeleteMapping("{fileCode}")
     public ResponseEntity<?> deleteSongFile(@PathVariable String songCode,
                                             @PathVariable String fileCode) {
-        songFileService.removeSongFile(new SongFileQuery(songCode, fileCode));
+        songFileService.deleteSongFile(new SongFileQuery(songCode, fileCode));
         return ResponseEntity.ok().build();
     }
 
@@ -70,12 +70,26 @@ public class SongFileController {
     }
 
     @GetMapping("{fileCode}/thumbs/{thumbCode}")
-    public ResponseEntity<?> downloadFileThumbnails(@PathVariable String songCode,
-                                                    @PathVariable String fileCode,
-                                                    @PathVariable String thumbCode) {
+    public ResponseEntity<?> downloadFileThumbnail(@PathVariable String songCode,
+                                                   @PathVariable String fileCode,
+                                                   @PathVariable String thumbCode) {
         return songFileService.getSongFileThumb(new SongFileQuery(songCode, fileCode), thumbCode)
                 .map(HttpFileResponseType::ok)
                 .orElse(ResponseEntity.notFound().build());
+
+    }
+
+    @DeleteMapping("{fileCode}/thumbs/{thumbCode}")
+    public ResponseEntity<?> deleteFileThumbnail(@PathVariable String songCode, @PathVariable String fileCode, @PathVariable String thumbCode) {
+        songFileService.deleteSongFileThumb(new SongFileQuery(songCode, fileCode), thumbCode);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @DeleteMapping("{fileCode}/thumbs}")
+    public ResponseEntity<?> deleteAllFileThumbnails(@PathVariable String songCode, @PathVariable String fileCode) {
+        songFileService.deleteSongAllFileThumbs(new SongFileQuery(songCode, fileCode));
+        return ResponseEntity.ok().build();
 
     }
 }

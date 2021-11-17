@@ -4,6 +4,7 @@ import com.daswort.core.SequenceGenerator;
 import com.daswort.core.image.transform.ImageTransformationType;
 import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.service.storage.SongFilePathBuilder;
+import com.daswort.core.service.storage.SongFilePathResolver;
 import com.daswort.core.song.domain.SongFile;
 import com.daswort.core.song.domain.Thumbnail;
 import com.daswort.core.song.query.SongFileQuery;
@@ -38,13 +39,13 @@ public class SongFileService {
         return songFileRepository.getSongFile(query.songCode(), query.fileCode());
     }
 
-    public Optional<SongFile> addSongFile(String songCode, FileResource fileResource) {
+    public Optional<SongFile> addSongFile(String songCode, String fileName, FileResource fileResource) {
         requireNonNull(songCode);
         requireNonNull(fileResource);
-        final var fileExtension = FileUtils.getFileExtension(fileResource.getName());
+        final var fileExtension = FileUtils.getFileExtension(fileName);
         final var sequence = sequenceGenerator.nextSequence(SongFile.SEQUENCE);
         final var file = SongFile.builder()
-                .name(fileResource.getName())
+                .name(fileName)
                 .code(sequence)
                 .extension(fileExtension.orElse(""))
                 .size(fileResource.getContentLength())
@@ -75,11 +76,19 @@ public class SongFileService {
         songFileRepository.makeFilePrimary(songCode, fileCode, isPrimary);
     }
 
-    public void removeSongFile(SongFileQuery query) {
+    public void deleteSongFileResources(SongFileQuery query, SongFile file) {
+        file.getThumbnails().forEach(thumbnail -> deleteSongFileThumbResource(query, thumbnail));
+        final var fileResourcePath = SongFilePathResolver.resolve(query.songCode(), file);
+        fileStorageService.delete(fileResourcePath);
+    }
+
+    public void deleteSongFile(SongFileQuery query) {
         final var songCode = query.songCode();
         final var fileCode = query.fileCode();
-        requireNonNull(songCode, fileCode);
-        fileStorageService.delete(SongFilePathBuilder.build(songCode, fileCode));
+        songFileRepository.getSongFile(songCode, fileCode).ifPresent(songFile -> {
+            deleteSongFileResources(query, songFile);
+            //TODO continue implementation
+        });
     }
 
     public void createFileThumbnail(SongFileQuery query, ImageTransformationType... imageTransformationTypes) {
@@ -111,5 +120,25 @@ public class SongFileService {
         final var thumb = thumbOpt.get();
         final var filePath = SongFilePathBuilder.build(query.songCode(), query.fileCode(), thumbCode);
         return fileStorageService.get(filePath).map(fileResource -> new SongFileThumbnailResource(fileResource, thumb));
+    }
+
+    public void deleteSongFileThumbResource(SongFileQuery query, Thumbnail thumbnail) {
+        final var thumbPath = SongFilePathResolver.resolve(query, thumbnail);
+        fileStorageService.delete(thumbPath);
+    }
+
+    public void deleteSongFileThumb(SongFileQuery query, Thumbnail thumbnail) {
+        deleteSongFileThumbResource(query, thumbnail);
+        songFileThumbnailRepository.deleteThumbnail(query.songCode(), query.fileCode(), thumbnail.getCode());
+    }
+
+    public void deleteSongFileThumb(SongFileQuery query, String thumbCode) {
+        songFileThumbnailRepository.findByCode(query.songCode(), query.fileCode(), thumbCode).ifPresent(thumbnail -> deleteSongFileThumb(query, thumbnail));
+    }
+
+    public void deleteSongAllFileThumbs(SongFileQuery query) {
+        songFileRepository.getSongFile(query.songCode(), query.fileCode())
+                .map(SongFile::getThumbnails)
+                .orElse(List.of()).forEach(thumbnail -> deleteSongFileThumb(query, thumbnail.getCode()));
     }
 }

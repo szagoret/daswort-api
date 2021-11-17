@@ -10,4 +10,8 @@ public interface ResourceEntity {
     Instant getUploadedAt();
 
     String getExtension();
+
+    default String getName() {
+        return null;
+    }
 }

@@ -26,7 +26,7 @@ public class SongDtoMapper {
                         .translators(authorDtos(song.getTranslators()))
                         .publishDate(song.getPublishDate())
                         .language(song.getLanguage())
-                        .songFiles(song.getSongFiles())
+                        .files(song.getFiles())
                         .build());
     }
 

@@ -6,6 +6,4 @@ public interface FileResource {
     long getContentLength();
 
     byte[] getBytes();
-
-    String getName();
 }

@@ -7,12 +7,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 public class HttpFileResponseType {
 
     public static ResponseEntity<?> ok(EntityFileResource<? extends ResourceEntity> entityFileResource) {
-        final var fileName = entityFileResource.getName();
+        final var fileName = Optional.ofNullable(entityFileResource.getEntity().getName()).or(() -> ofNullable(entityFileResource.getEntity().getCode())).orElse(Instant.now().toString());
         final var byteArray = entityFileResource.getBytes();
         final var mediaType = resolveMediaType(entityFileResource.getEntity());
 

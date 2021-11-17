@@ -56,4 +56,20 @@ public class SongFileThumbnailRepositoryImpl implements SongFileThumbnailReposit
         final var updatedSong = mongoOperations.findAndModify(query, update, options().returnNew(true), Song.class);
         return updatedSong == null ? Optional.empty() : Optional.of(thumbnail);
     }
+
+    @Override
+    public void deleteThumbnails(String songCode, String fileCode, List<String> thumbCodes) {
+        final var query = new Query(where("code").is(songCode).and("files.code").is(fileCode));
+        final var update = new Update()
+                .pull("files.$.thumbnails", new Query(where("code").in(thumbCodes)).getQueryObject());
+        mongoOperations.updateFirst(query, update, Song.class);
+    }
+
+    @Override
+    public void deleteAllThumbnails(String songCode, String fileCode) {
+        final var query = new Query(where("code").is(songCode).and("files.code").is(fileCode));
+        final var update = new Update()
+                .pull("files.$.thumbnails", new Query().getQueryObject());
+        mongoOperations.updateFirst(query, update, Song.class);
+    }
 }

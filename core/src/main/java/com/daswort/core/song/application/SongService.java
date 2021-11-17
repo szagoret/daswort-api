@@ -57,9 +57,9 @@ public class SongService {
 
 
     public void removeSong(String songCode) {
-        final var files = songRepository.findSongByCode(songCode).map(Song::getSongFiles).orElse(Collections.emptyList());
+        final var files = songRepository.findSongByCode(songCode).map(Song::getFiles).orElse(Collections.emptyList());
         files.forEach(file -> {
-            songFileService.removeSongFile(new SongFileQuery(songCode, file.getCode()));
+            songFileService.deleteSongFile(new SongFileQuery(songCode, file.getCode()));
 //            ofNullable(file.getLgThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
 //            ofNullable(file.getSmThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
         });

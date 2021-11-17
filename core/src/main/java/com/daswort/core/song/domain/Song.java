@@ -41,7 +41,7 @@ public class Song implements Serializable {
 
     private List<Author> translators;
 
-    private List<SongFile> songFiles;
+    private List<SongFile> files;
 
     private LocalDate publishDate;
 

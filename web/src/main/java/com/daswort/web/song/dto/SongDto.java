@@ -29,5 +29,5 @@ public class SongDto {
     List<AuthorDto> translators;
     LocalDate publishDate;
     Language language;
-    List<SongFile> songFiles;
+    List<SongFile> files;
 }
