@@ -57,8 +57,7 @@ public class SongFileController {
     }
 
     @DeleteMapping("{fileCode}")
-    public ResponseEntity<?> deleteSongFile(@PathVariable String songCode,
-                                            @PathVariable String fileCode) {
+    public ResponseEntity<?> deleteSongFile(@PathVariable String songCode, @PathVariable String fileCode) {
         songFileService.deleteSongFile(new SongFileQuery(songCode, fileCode));
         return ResponseEntity.ok().build();
     }

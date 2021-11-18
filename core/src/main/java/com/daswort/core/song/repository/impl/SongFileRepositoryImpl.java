@@ -1,7 +1,7 @@
 package com.daswort.core.song.repository.impl;
 
-import com.daswort.core.song.domain.SongFile;
 import com.daswort.core.song.domain.Song;
+import com.daswort.core.song.domain.SongFile;
 import com.daswort.core.song.repository.SongFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -67,5 +67,12 @@ public class SongFileRepositoryImpl implements SongFileRepository {
     public void makeFilePrimary(String songCode, String fileCode, boolean isPrimary) {
         mongoOperations.updateFirst(query(where("code").is(songCode)), new Update().set("files.$[].primary", false), Song.class);
         mongoOperations.updateFirst(query(where("code").is(songCode).and("files.code").is(fileCode)), new Update().set("files.$.primary", isPrimary), Song.class);
+    }
+
+    @Override
+    public void deleteSongFile(String songCode, String fileCode) {
+        final var query = new Query(where("code").is(songCode));
+        final var update = new Update().pull("files", new Query(where("code").is(fileCode)).getQueryObject());
+        mongoOperations.updateFirst(query, update, Song.class);
     }
 }

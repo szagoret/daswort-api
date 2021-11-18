@@ -13,4 +13,6 @@ public interface SongFileRepository {
     Optional<SongFile> saveSongFile(String songCode, SongFile songFile);
 
     void makeFilePrimary(String songCode, String fileCode, boolean isPrimary);
+
+    void deleteSongFile(String songCode, String fileCode);
 }

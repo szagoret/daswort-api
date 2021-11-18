@@ -5,7 +5,6 @@ import com.daswort.core.SequenceGenerator;
 import com.daswort.core.song.command.SaveSongCommand;
 import com.daswort.core.song.converter.SaveCommandUpdateConverter;
 import com.daswort.core.song.domain.Song;
-import com.daswort.core.song.query.SongFileQuery;
 import com.daswort.core.song.query.SongSearchQuery;
 import com.daswort.core.song.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
@@ -56,13 +55,11 @@ public class SongService {
     }
 
 
-    public void removeSong(String songCode) {
-        final var files = songRepository.findSongByCode(songCode).map(Song::getFiles).orElse(Collections.emptyList());
-        files.forEach(file -> {
-            songFileService.deleteSongFile(new SongFileQuery(songCode, file.getCode()));
-//            ofNullable(file.getLgThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
-//            ofNullable(file.getSmThumbnails()).orElse(Set.of()).forEach(songFileService::removeSongFile);
-        });
+    public void deleteSong(String songCode) {
+        songRepository.findSongByCode(songCode)
+                .map(Song::getFiles)
+                .orElse(Collections.emptyList())
+                .forEach(file -> songFileService.deleteSongFileResources(songCode, file));
         songRepository.deleteSongByCode(songCode);
     }
 

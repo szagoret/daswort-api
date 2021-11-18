@@ -47,7 +47,7 @@ public class SongController {
 
     @DeleteMapping("/{songCode}")
     public ResponseEntity<?> deleteSong(@PathVariable String songCode) {
-        songService.removeSong(songCode);
+        songService.deleteSong(songCode);
         return ResponseEntity.ok().build();
     }
 }

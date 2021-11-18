@@ -76,19 +76,14 @@ public class SongFileService {
         songFileRepository.makeFilePrimary(songCode, fileCode, isPrimary);
     }
 
-    public void deleteSongFileResources(SongFileQuery query, SongFile file) {
-        file.getThumbnails().forEach(thumbnail -> deleteSongFileThumbResource(query, thumbnail));
-        final var fileResourcePath = SongFilePathResolver.resolve(query.songCode(), file);
-        fileStorageService.delete(fileResourcePath);
+    public void deleteSongFileResources(String songCode, SongFile file) {
+        fileStorageService.delete(SongFilePathResolver.resolve(songCode, file));
+        file.getThumbnails().forEach((thumbnail) -> deleteSongFileThumbResource(new SongFileQuery(songCode, file.getCode()), thumbnail));
+        songFileRepository.deleteSongFile(songCode, file.getCode());
     }
 
     public void deleteSongFile(SongFileQuery query) {
-        final var songCode = query.songCode();
-        final var fileCode = query.fileCode();
-        songFileRepository.getSongFile(songCode, fileCode).ifPresent(songFile -> {
-            deleteSongFileResources(query, songFile);
-            //TODO continue implementation
-        });
+        songFileRepository.getSongFile(query.songCode(), query.fileCode()).ifPresent(file -> deleteSongFileResources(query.songCode(), file));
     }
 
     public void createFileThumbnail(SongFileQuery query, ImageTransformationType... imageTransformationTypes) {
@@ -123,8 +118,7 @@ public class SongFileService {
     }
 
     public void deleteSongFileThumbResource(SongFileQuery query, Thumbnail thumbnail) {
-        final var thumbPath = SongFilePathResolver.resolve(query, thumbnail);
-        fileStorageService.delete(thumbPath);
+        fileStorageService.delete(SongFilePathResolver.resolve(query, thumbnail));
     }
 
     public void deleteSongFileThumb(SongFileQuery query, Thumbnail thumbnail) {
@@ -139,6 +133,6 @@ public class SongFileService {
     public void deleteSongAllFileThumbs(SongFileQuery query) {
         songFileRepository.getSongFile(query.songCode(), query.fileCode())
                 .map(SongFile::getThumbnails)
-                .orElse(List.of()).forEach(thumbnail -> deleteSongFileThumb(query, thumbnail.getCode()));
+                .orElse(List.of()).forEach(thumbnail -> deleteSongFileThumb(query, thumbnail));
     }
 }
