@@ -1,6 +1,6 @@
 package com.daswort.core.song.application;
 
-import com.daswort.core.SequenceGenerator;
+import com.daswort.core.common.entity.SequenceGenerator;
 import com.daswort.core.image.transform.ImageTransformationType;
 import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.service.storage.SongFilePathBuilder;

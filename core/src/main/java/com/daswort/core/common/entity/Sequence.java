@@ -1,4 +1,4 @@
-package com.daswort.core.entity;
+package com.daswort.core.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

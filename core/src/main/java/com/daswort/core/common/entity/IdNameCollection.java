@@ -1,4 +1,4 @@
-package com.daswort.core.entity;
+package com.daswort.core.common.entity;
 
 public enum IdNameCollection {
     composition(Constants.composition),

@@ -1,6 +1,5 @@
-package com.daswort.core;
+package com.daswort.core.common.entity;
 
-import com.daswort.core.entity.Sequence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;

@@ -48,13 +48,4 @@ public class Song implements Serializable {
     private Language language;
 
     private Instant createdAt;
-
-    @Deprecated
-    private Category category;
-    @Deprecated
-    private Author melody;
-    @Deprecated
-    private Author arrangement;
-    @Deprecated
-    private Author adaptation;
 }

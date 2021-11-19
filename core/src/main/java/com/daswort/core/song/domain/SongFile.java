@@ -1,6 +1,6 @@
 package com.daswort.core.song.domain;
 
-import com.daswort.core.EntitySequenceName;
+import com.daswort.core.common.entity.EntitySequenceName;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;

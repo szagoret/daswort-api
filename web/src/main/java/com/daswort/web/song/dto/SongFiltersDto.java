@@ -1,6 +1,6 @@
 package com.daswort.web.song.dto;
 
-import com.daswort.web.idname.IdNameDto;
+import com.daswort.web.common.IdTitleDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,12 +9,12 @@ import java.util.List;
 @Data
 @Builder
 public class SongFiltersDto {
-    private List<IdNameDto> topics;
-    private List<IdNameDto> compositions;
-    private List<IdNameDto> difficulties;
-    private List<IdNameDto> instruments;
-    private List<IdNameDto> authors;
-    private List<IdNameDto> melodies;
-    private List<IdNameDto> arrangements;
-    private List<IdNameDto> adaptations;
+    private List<IdTitleDto> topics;
+    private List<IdTitleDto> compositions;
+    private List<IdTitleDto> difficulties;
+    private List<IdTitleDto> instruments;
+    private List<IdTitleDto> authors;
+    private List<IdTitleDto> melodies;
+    private List<IdTitleDto> arrangements;
+    private List<IdTitleDto> adaptations;
 }

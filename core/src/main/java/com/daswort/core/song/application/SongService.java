@@ -1,7 +1,7 @@
 package com.daswort.core.song.application;
 
-import com.daswort.core.EntitySequenceName;
-import com.daswort.core.SequenceGenerator;
+import com.daswort.core.common.entity.EntitySequenceName;
+import com.daswort.core.common.entity.SequenceGenerator;
 import com.daswort.core.song.command.SaveSongCommand;
 import com.daswort.core.song.converter.SaveCommandUpdateConverter;
 import com.daswort.core.song.domain.Song;
