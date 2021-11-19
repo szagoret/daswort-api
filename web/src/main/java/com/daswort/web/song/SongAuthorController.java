@@ -3,6 +3,7 @@ package com.daswort.web.song;
 import com.daswort.core.song.application.AuthorService;
 import com.daswort.core.song.domain.Author;
 import com.daswort.core.song.repository.AuthorRepository;
+import com.daswort.web.http.UpdateResultHttpResponseMapper;
 import com.daswort.web.song.dto.AuthorDto;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -32,8 +33,7 @@ public class SongAuthorController {
 
     @DeleteMapping("{authorId}")
     public ResponseEntity<?> removeAuthor(@PathVariable("authorId") String authorId) {
-        authorRepository.deleteById(authorId);
-        return ResponseEntity.ok().build();
+        return UpdateResultHttpResponseMapper.toResponse(authorService.removeAuthor(authorId));
     }
 
     @PostMapping

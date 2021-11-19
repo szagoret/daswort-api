@@ -16,4 +16,16 @@ public class AuthorService {
         songService.updateAuthors(author);
     }
 
+    public UpdateResult removeAuthor(String id) {
+        final var hasReferences = authorRepository.findById(id)
+                .map(songService::isReferencedByAuthor)
+                .orElse(false);
+        if (hasReferences) {
+            return UpdateResult.error();
+        } else {
+            authorRepository.deleteById(id);
+            return UpdateResult.success();
+        }
+    }
+
 }

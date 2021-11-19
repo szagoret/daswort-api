@@ -10,6 +10,7 @@ import com.daswort.core.song.query.SongSearchQuery;
 import com.daswort.core.song.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +65,18 @@ public class SongService {
         songRepository.deleteSongByCode(songCode);
     }
 
+    public boolean isReferencedByAuthor(Author author) {
+        if (ObjectId.isValid(author.getId())) {
+            return songRepository.isReferencedByAuthor(author);
+        } else {
+            return false;
+        }
+    }
+
     public void updateAuthors(Author author) {
-        songRepository.updateAuthorRef(author);
+        if (ObjectId.isValid(author.getId())) {
+            songRepository.updateAuthorRefs(author);
+        }
     }
 
 }
