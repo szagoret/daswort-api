@@ -4,6 +4,7 @@ import com.daswort.core.common.entity.EntitySequenceName;
 import com.daswort.core.common.entity.SequenceGenerator;
 import com.daswort.core.song.command.SaveSongCommand;
 import com.daswort.core.song.converter.SaveCommandUpdateConverter;
+import com.daswort.core.song.domain.Author;
 import com.daswort.core.song.domain.Song;
 import com.daswort.core.song.query.SongSearchQuery;
 import com.daswort.core.song.repository.SongRepository;
@@ -61,6 +62,10 @@ public class SongService {
                 .orElse(Collections.emptyList())
                 .forEach(file -> songFileService.deleteSongFileResources(songCode, file));
         songRepository.deleteSongByCode(songCode);
+    }
+
+    public void updateAuthors(Author author) {
+        songRepository.updateAuthor(author);
     }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io", "https://daswort.gitlab.io", "http://192.168.1.38:3000", "http://192.168.1.38:3000/daswort-ui"})
 @RestController
@@ -23,19 +22,19 @@ public class SongTopicController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Topic>> findAll() {
+    public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(topicRepository.findAll());
     }
 
     @DeleteMapping("{topicId}")
     public ResponseEntity<?> removeTopic(@PathVariable("topicId") String topicId) {
-        topicRepository.delete(topicId);
+        topicRepository.deleteById(topicId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
     public ResponseEntity<?> saveTopic(@RequestBody @Valid IdTitleDto topic) {
-        topicRepository.save(topic.getId(), topic.getTitle());
+        topicRepository.save(new Topic(topic.getId(), topic.getTitle()));
         return ResponseEntity.ok().build();
     }
 }

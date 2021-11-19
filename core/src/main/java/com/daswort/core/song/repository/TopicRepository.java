@@ -1,7 +1,9 @@
 package com.daswort.core.song.repository;
 
-import com.daswort.core.common.entity.IdTitleEntityRepository;
 import com.daswort.core.song.domain.Topic;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TopicRepository extends IdTitleEntityRepository<Topic> {
+@Repository
+public interface TopicRepository extends CrudRepository<Topic, String> {
 }

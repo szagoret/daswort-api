@@ -1,8 +1,9 @@
 package com.daswort.core.song.repository;
 
-import com.daswort.core.common.entity.IdTitleEntityRepository;
-import com.daswort.core.song.domain.Instrument;
 import com.daswort.core.song.domain.Vocal;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface VocalRepository extends IdTitleEntityRepository<Vocal> {
+@Repository
+public interface VocalRepository extends CrudRepository<Vocal, String> {
 }
