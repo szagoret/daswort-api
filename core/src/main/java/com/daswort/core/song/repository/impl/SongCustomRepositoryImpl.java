@@ -79,7 +79,7 @@ db.song.update(
 
      */
     @Override
-    public void updateAuthor(Author author) {
+    public void updateAuthorRef(Author author) {
         final var authorId = new ObjectId(author.getId());
         final var update = new Update()
                 .set("arrangers.$[a].firstName", author.getFirstName())

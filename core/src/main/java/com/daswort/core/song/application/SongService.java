@@ -65,7 +65,7 @@ public class SongService {
     }
 
     public void updateAuthors(Author author) {
-        songRepository.updateAuthor(author);
+        songRepository.updateAuthorRef(author);
     }
 
 }

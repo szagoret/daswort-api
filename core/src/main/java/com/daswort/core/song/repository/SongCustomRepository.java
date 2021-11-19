@@ -10,5 +10,5 @@ import org.springframework.data.mongodb.core.query.UpdateDefinition;
 public interface SongCustomRepository {
     Song save(String songCode, UpdateDefinition updateDefinition);
     Page<Song> findAll(Query query, Pageable pageable);
-    void updateAuthor(Author author);
+    void updateAuthorRef(Author author);
 }
