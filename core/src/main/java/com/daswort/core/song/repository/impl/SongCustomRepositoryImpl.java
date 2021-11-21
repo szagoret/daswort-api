@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.aggregation.Fields.field;
+import static org.springframework.data.mongodb.core.aggregation.Fields.fields;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -84,7 +85,7 @@ db.song.update(
 
      */
     @Override
-    public void updateAuthorRefs(Author author) {
+    public void updateRef(Author author) {
         final var authorId = new ObjectId(author.getId());
         final var update = new Update()
                 .set("arrangers.$[a].firstName", author.getFirstName())
@@ -99,6 +100,33 @@ db.song.update(
                 .filterArray(Criteria.where("c._id").is(authorId))
                 .filterArray(Criteria.where("o._id").is(authorId))
                 .filterArray(Criteria.where("t._id").is(authorId));
+        mongoOperations.update(Song.class).apply(update).all();
+    }
+
+    @Override
+    public void updateRef(Instrument instrument) {
+        final var instrumentId = new ObjectId(instrument.getId());
+        final var update = new Update()
+                .set("instruments.$[i].title", instrument.getTitle())
+                .filterArray(Criteria.where("i._id").is(instrumentId));
+        mongoOperations.update(Song.class).apply(update).all();
+    }
+
+    @Override
+    public void updateRef(Vocal vocals) {
+        final var vocalId = new ObjectId(vocals.getId());
+        final var update = new Update()
+                .set("vocals.$[i].title", vocals.getTitle())
+                .filterArray(Criteria.where("i._id").is(vocalId));
+        mongoOperations.update(Song.class).apply(update).all();
+    }
+
+    @Override
+    public void updateRef(Topic topic) {
+        final var topicId = new ObjectId(topic.getId());
+        final var update = new Update()
+                .set("topics.$[i].title", topic.getTitle())
+                .filterArray(Criteria.where("i._id").is(topicId));
         mongoOperations.update(Song.class).apply(update).all();
     }
 
@@ -123,9 +151,8 @@ db.song.update(
         }
     ])
      */
-
     @Override
-    public boolean isReferencedByAuthor(Author author) {
+    public boolean isReferencedBy(Author author) {
         final var aggregationStages = List.of(
                 new ProjectionOperation().and("composers").concatArrays("arrangers", "orchestrators", "translators").as("authors"),
                 new UnwindOperation(field("authors")),
@@ -136,29 +163,35 @@ db.song.update(
     }
 
     @Override
-    public void updateInstrumentRef(Instrument instrument) {
-        final var instrumentId = new ObjectId(instrument.getId());
-        final var update = new Update()
-                .set("instruments.$[i].title", instrument.getTitle())
-                .filterArray(Criteria.where("i._id").is(instrumentId));
-        mongoOperations.update(Song.class).apply(update).all();
+    public boolean isReferencedBy(Instrument instrument) {
+        final var aggregationStages = List.of(
+                new ProjectionOperation(fields("instruments")),
+                new UnwindOperation(field("instruments")),
+                new ReplaceRootOperation(field("instruments")),
+                new MatchOperation(where("_id").is(new ObjectId(instrument.getId())))
+        );
+        return mongoOperations.aggregate(newAggregation(aggregationStages), Song.class, Instrument.class).getMappedResults().size() > 0;
     }
 
     @Override
-    public void updateVocalRef(Vocal vocals) {
-        final var vocalId = new ObjectId(vocals.getId());
-        final var update = new Update()
-                .set("vocals.$[i].title", vocals.getTitle())
-                .filterArray(Criteria.where("i._id").is(vocalId));
-        mongoOperations.update(Song.class).apply(update).all();
+    public boolean isReferencedBy(Vocal vocal) {
+        final var aggregationStages = List.of(
+                new ProjectionOperation(fields("vocals")),
+                new UnwindOperation(field("vocals")),
+                new ReplaceRootOperation(field("vocals")),
+                new MatchOperation(where("_id").is(new ObjectId(vocal.getId())))
+        );
+        return mongoOperations.aggregate(newAggregation(aggregationStages), Song.class, Vocal.class).getMappedResults().size() > 0;
     }
 
     @Override
-    public void updateTopicRef(Topic topic) {
-        final var topicId = new ObjectId(topic.getId());
-        final var update = new Update()
-                .set("topics.$[i].title", topic.getTitle())
-                .filterArray(Criteria.where("i._id").is(topicId));
-        mongoOperations.update(Song.class).apply(update).all();
+    public boolean isReferencedBy(Topic topic) {
+        final var aggregationStages = List.of(
+                new ProjectionOperation(fields("topics")),
+                new UnwindOperation(field("topics")),
+                new ReplaceRootOperation(field("topics")),
+                new MatchOperation(where("_id").is(new ObjectId(topic.getId())))
+        );
+        return mongoOperations.aggregate(newAggregation(aggregationStages), Song.class, Topic.class).getMappedResults().size() > 0;
     }
 }

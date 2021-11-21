@@ -4,8 +4,7 @@ import com.daswort.core.common.entity.EntitySequenceName;
 import com.daswort.core.common.entity.SequenceGenerator;
 import com.daswort.core.song.command.SaveSongCommand;
 import com.daswort.core.song.converter.SaveCommandUpdateConverter;
-import com.daswort.core.song.domain.Author;
-import com.daswort.core.song.domain.Song;
+import com.daswort.core.song.domain.*;
 import com.daswort.core.song.query.SongSearchQuery;
 import com.daswort.core.song.repository.SongRepository;
 import com.daswort.core.specification.SongSearchSpecification;
@@ -65,17 +64,59 @@ public class SongService {
         songRepository.deleteSongByCode(songCode);
     }
 
-    public boolean isReferencedByAuthor(Author author) {
+    public boolean isReferencedBy(Author author) {
         if (ObjectId.isValid(author.getId())) {
-            return songRepository.isReferencedByAuthor(author);
+            return songRepository.isReferencedBy(author);
         } else {
             return false;
         }
     }
 
-    public void updateAuthors(Author author) {
+    public boolean isReferencedBy(Instrument instrument) {
+        if (ObjectId.isValid(instrument.getId())) {
+            return songRepository.isReferencedBy(instrument);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isReferencedBy(Topic topic) {
+        if (ObjectId.isValid(topic.getId())) {
+            return songRepository.isReferencedBy(topic);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isReferencedBy(Vocal vocal) {
+        if (ObjectId.isValid(vocal.getId())) {
+            return songRepository.isReferencedBy(vocal);
+        } else {
+            return false;
+        }
+    }
+
+    public void updateRef(Author author) {
         if (ObjectId.isValid(author.getId())) {
-            songRepository.updateAuthorRefs(author);
+            songRepository.updateRef(author);
+        }
+    }
+
+    public void updateRef(Instrument instrument) {
+        if (ObjectId.isValid(instrument.getId())) {
+            songRepository.updateRef(instrument);
+        }
+    }
+
+    public void updateRef(Vocal vocal) {
+        if (ObjectId.isValid(vocal.getId())) {
+            songRepository.updateRef(vocal);
+        }
+    }
+
+    public void updateRef(Topic topic) {
+        if (ObjectId.isValid(topic.getId())) {
+            songRepository.updateRef(topic);
         }
     }
 

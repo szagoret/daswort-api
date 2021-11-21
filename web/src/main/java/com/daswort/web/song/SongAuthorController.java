@@ -22,12 +22,12 @@ public class SongAuthorController {
     private final AuthorService authorService;
 
     @GetMapping("{authorId}")
-    public ResponseEntity<?> findById(@PathVariable("authorId") String authorId) {
+    public ResponseEntity<?> getById(@PathVariable("authorId") String authorId) {
         return ResponseEntity.of(Optional.of(authorId).filter(ObjectId::isValid).flatMap(authorRepository::findById));
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(authorRepository.findAll());
     }
 

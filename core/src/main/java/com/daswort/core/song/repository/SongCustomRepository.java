@@ -11,13 +11,19 @@ public interface SongCustomRepository {
 
     Page<Song> findAll(Query query, Pageable pageable);
 
-    void updateAuthorRefs(Author author);
+    void updateRef(Author author);
 
-    void updateInstrumentRef(Instrument instrument);
+    void updateRef(Instrument instrument);
 
-    void updateVocalRef(Vocal vocal);
+    void updateRef(Vocal vocal);
 
-    void updateTopicRef(Topic topic);
+    void updateRef(Topic topic);
 
-    boolean isReferencedByAuthor(Author author);
+    boolean isReferencedBy(Author author);
+
+    boolean isReferencedBy(Instrument instrument);
+
+    boolean isReferencedBy(Vocal vocal);
+
+    boolean isReferencedBy(Topic topic);
 }

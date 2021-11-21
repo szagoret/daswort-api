@@ -1,7 +1,6 @@
-package com.daswort.web.song;
+package com.daswort.web.song.dto;
 
 import com.daswort.web.common.IdTitleDto;
-import com.daswort.web.song.dto.SongDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class SongSearchSuggestion {
+public class SongSearchSuggestionDto {
     private List<IdTitleDto> path;
     private SongDto song;
 }

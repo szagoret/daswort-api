@@ -1,33 +1,33 @@
 package com.daswort.core.song.application;
 
-import com.daswort.core.song.domain.Author;
-import com.daswort.core.song.repository.AuthorRepository;
+import com.daswort.core.song.domain.Vocal;
+import com.daswort.core.song.repository.VocalRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorService {
-    private final AuthorRepository authorRepository;
+public class VocalService {
+    private final VocalRepository vocalRepository;
     private final SongService songService;
 
-    public void saveAuthor(Author author) {
-        authorRepository.save(author);
-        songService.updateRef(author);
+    public void saveVocal(Vocal vocal) {
+        vocalRepository.save(vocal);
+        songService.updateRef(vocal);
     }
 
-    public UpdateResult removeAuthor(String id) {
+    public UpdateResult removeVocal(String id) {
         if (!ObjectId.isValid(id)) {
             return UpdateResult.error();
         }
-        final var hasReferences = authorRepository.findById(id)
+        final var hasReferences = vocalRepository.findById(id)
                 .map(songService::isReferencedBy)
                 .orElse(false);
         if (hasReferences) {
             return UpdateResult.error();
         } else {
-            authorRepository.deleteById(id);
+            vocalRepository.deleteById(id);
             return UpdateResult.success();
         }
     }

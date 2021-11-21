@@ -6,6 +6,7 @@ import com.daswort.core.song.query.SongSearchQuery;
 import com.daswort.web.song.dto.SaveSongCommandMapper;
 import com.daswort.web.song.dto.SongDto;
 import com.daswort.web.song.dto.SongDtoMapper;
+import com.daswort.web.song.dto.SongSearchSuggestionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,9 @@ public class SongController {
     }
 
     @GetMapping("/find")
-    public List<SongSearchSuggestion> findByName(@RequestParam(defaultValue = "") String searchTerm) {
+    public List<SongSearchSuggestionDto> getByName(@RequestParam(defaultValue = "") String searchTerm) {
         List<Song> songsByName = songService.findByName(searchTerm);
-        return songsByName.stream().map(song -> SongSearchSuggestion.builder().song(toSongDto(song).orElseThrow()).build()).collect(toList());
+        return songsByName.stream().map(song -> SongSearchSuggestionDto.builder().song(toSongDto(song).orElseThrow()).build()).collect(toList());
     }
 
     @GetMapping("/search")
