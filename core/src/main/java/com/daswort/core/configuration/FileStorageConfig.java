@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import software.amazon.awssdk.auth.credentials.ContainerCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -25,7 +26,7 @@ public class FileStorageConfig {
     public S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.of(env.getProperty("daswort.aws.region", "eu-central-1")))
-                .credentialsProvider(ContainerCredentialsProvider.builder().build()).build();
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create()).build();
     }
 
     @Bean
