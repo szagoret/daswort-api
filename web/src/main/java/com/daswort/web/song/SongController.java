@@ -17,7 +17,6 @@ import java.util.List;
 import static com.daswort.web.song.dto.SongDtoMapper.toSongDto;
 import static java.util.stream.Collectors.toList;
 
-@CrossOrigin(origins = {"http://localhost:3000", "https://szagoret.github.io", "https://daswort.gitlab.io", "http://192.168.1.38:3000", "http://192.168.1.38:3000/daswort-ui"})
 @RestController
 @RequestMapping("song")
 @RequiredArgsConstructor
