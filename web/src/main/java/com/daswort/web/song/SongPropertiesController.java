@@ -8,10 +8,12 @@ import com.daswort.web.song.dto.SongProperties;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.util.Lists;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = {"https://noav.vercel.app"})
 @RestController
 @RequestMapping("song/properties")
 @RequiredArgsConstructor
