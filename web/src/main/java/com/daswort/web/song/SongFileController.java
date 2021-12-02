@@ -16,7 +16,7 @@ import java.io.IOException;
 import static com.daswort.core.image.transform.ImageTransformationType.LG;
 import static com.daswort.core.image.transform.ImageTransformationType.SM;
 
-@CrossOrigin(origins = {"https://noav.vercel.app"})
+@CrossOrigin(origins = {"https://noav.vercel.app", "http://localhost:3000"})
 @RestController
 @RequestMapping("song/{songCode}/files")
 @RequiredArgsConstructor

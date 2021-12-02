@@ -17,7 +17,7 @@ import java.util.List;
 import static com.daswort.web.song.dto.SongDtoMapper.toSongDto;
 import static java.util.stream.Collectors.toList;
 
-@CrossOrigin(origins = {"https://noav.vercel.app"})
+@CrossOrigin(origins = {"https://noav.vercel.app", "http://localhost:3000"})
 @RestController
 @RequestMapping("song")
 @RequiredArgsConstructor

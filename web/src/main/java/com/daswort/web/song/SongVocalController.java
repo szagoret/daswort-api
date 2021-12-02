@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@CrossOrigin(origins = {"https://noav.vercel.app"})
+@CrossOrigin(origins = {"https://noav.vercel.app", "http://localhost:3000"})
 @RestController
 @RequestMapping("song/vocals")
 @RequiredArgsConstructor

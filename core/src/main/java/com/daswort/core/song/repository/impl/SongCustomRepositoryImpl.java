@@ -88,14 +88,10 @@ db.song.update(
     public void updateRef(Author author) {
         final var authorId = new ObjectId(author.getId());
         final var update = new Update()
-                .set("arrangers.$[a].firstName", author.getFirstName())
-                .set("arrangers.$[a].lastName", author.getLastName())
-                .set("composers.$[c].firstName", author.getFirstName())
-                .set("composers.$[c].lastName", author.getLastName())
-                .set("orchestrators.$[o].firstName", author.getFirstName())
-                .set("orchestrators.$[o].lastName", author.getLastName())
-                .set("translators.$[t].firstName", author.getFirstName())
-                .set("translators.$[t].lastName", author.getLastName())
+                .set("arrangers.$[a].name", author.getName())
+                .set("composers.$[c].name", author.getName())
+                .set("orchestrators.$[o].name", author.getName())
+                .set("translators.$[t].name", author.getName())
                 .filterArray(Criteria.where("a._id").is(authorId))
                 .filterArray(Criteria.where("c._id").is(authorId))
                 .filterArray(Criteria.where("o._id").is(authorId))

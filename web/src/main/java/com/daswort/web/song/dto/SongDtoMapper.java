@@ -25,7 +25,7 @@ public class SongDtoMapper {
                         .orchestrators(authorDtos(song.getOrchestrators()))
                         .translators(authorDtos(song.getTranslators()))
                         .publishDate(song.getPublishDate())
-                        .language(song.getLanguage())
+                        .language(song.getLng())
                         .files(Optional.ofNullable(song.getFiles()).orElse(List.of()))
                         .build());
     }
@@ -47,8 +47,7 @@ public class SongDtoMapper {
     private static AuthorDto authorDto(Author entity) {
         return Optional.ofNullable(entity).map(e -> AuthorDto.builder()
                         .id(e.getId())
-                        .firstName(e.getFirstName())
-                        .lastName(e.getLastName())
+                        .name(e.getName())
                         .build())
                 .orElse(null);
     }

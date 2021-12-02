@@ -7,6 +7,5 @@ import lombok.Value;
 @Builder
 public class AuthorDto {
     String id;
-    String firstName;
-    String lastName;
+    String name;
 }

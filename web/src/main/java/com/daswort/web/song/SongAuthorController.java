@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"https://noav.vercel.app"})
+@CrossOrigin(origins = {"https://noav.vercel.app", "http://localhost:3000"})
 @RestController
 @RequestMapping("song/authors")
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class SongAuthorController {
 
     @PostMapping
     public ResponseEntity<?> saveAuthor(@RequestBody @Valid AuthorDto author) {
-        authorService.saveAuthor(new Author(author.getId(), author.getFirstName(), author.getLastName()));
+        authorService.saveAuthor(new Author(author.getId(), author.getName()));
         return ResponseEntity.ok().build();
     }
 }

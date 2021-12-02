@@ -45,7 +45,7 @@ public class Song implements Serializable {
 
     private LocalDate publishDate;
 
-    private Language language;
+    private Language lng;
 
     private Instant createdAt;
 }

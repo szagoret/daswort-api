@@ -45,7 +45,7 @@ public class SaveSongCommandMapper {
     }
 
     private static Author toAuthor(AuthorDto dto) {
-        return new Author(dto.getId(), dto.getFirstName(), dto.getLastName());
+        return new Author(dto.getId(), dto.getName());
     }
 
     private static List<Author> toAuthor(List<AuthorDto> dtos) {

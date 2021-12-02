@@ -10,7 +10,7 @@ public class SaveCommandUpdateConverter {
                 .set("code", songCode)
                 .set("title", command.getTitle())
                 .set("originalTitle", command.getOriginalTitle())
-                .set("language", command.getLanguage())
+                .set("lng", command.getLanguage())
                 .set("instruments", command.getInstruments())
                 .set("vocals", command.getVocals())
                 .set("topics", command.getTopics())

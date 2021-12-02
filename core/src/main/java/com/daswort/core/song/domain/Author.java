@@ -18,6 +18,5 @@ import java.io.Serializable;
 public class Author implements Serializable {
     @MongoId(FieldType.OBJECT_ID)
     private String id;
-    private String firstName;
-    private String lastName;
+    private String name;
 }

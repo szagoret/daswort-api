@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import software.amazon.awssdk.auth.credentials.ContainerCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
