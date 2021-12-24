@@ -18,9 +18,11 @@ import static java.util.Optional.ofNullable;
 public class SongSearchQuery {
     private String title;
     private Set<String> instrumentsIds = new HashSet<>();
-    private Set<String> composersIds = new HashSet<>();
     private Set<String> topicsIds = new HashSet<>();
     private Set<String> vocalsIds = new HashSet<>();
+    private Set<String> composersIds = new HashSet<>();
+    private Set<String> arrangersIds = new HashSet<>();
+    private Set<String> orchestratorsIds = new HashSet<>();
 
     public Optional<String> getName() {
         return ofNullable(title);

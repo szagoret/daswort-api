@@ -31,26 +31,33 @@ public class SongSearchSpecification implements Specification<SongSearchQuery> {
         final List<Criteria> criteriaFilters = new ArrayList<>();
 
         // by title
-        songSearchQuery.getName().map(String::trim).filter(not(String::isBlank)).ifPresent(name -> criteriaFilters.add(where("title").regex(name, "i")));
+        songSearchQuery.getName().map(String::trim).filter(not(String::isBlank)).ifPresent(title -> criteriaFilters.add(where("title").regex(title, "i")));
 
         // by instruments
         if (songSearchQuery.getInstrumentsIds().size() > 0) {
             criteriaFilters.addAll(buildArrayMatchCriteria("instruments", songSearchQuery.getInstrumentsIds()));
         }
 
+        // by topics
+        if (songSearchQuery.getTopicsIds().size() > 0) {
+            criteriaFilters.addAll(buildArrayMatchCriteria("topics", songSearchQuery.getTopicsIds()));
+        }
         // by vocals
         if (songSearchQuery.getInstrumentsIds().size() > 0) {
             criteriaFilters.addAll(buildArrayMatchCriteria("vocals", songSearchQuery.getVocalsIds()));
         }
 
-        // by topics
-        if (songSearchQuery.getTopicsIds().size() > 0) {
-            criteriaFilters.addAll(buildArrayMatchCriteria("topics", songSearchQuery.getTopicsIds()));
-        }
-
         // by composers
         if (songSearchQuery.getComposersIds().size() > 0) {
             criteriaFilters.addAll(buildArrayMatchCriteria("composers", songSearchQuery.getComposersIds()));
+        }
+        // by arrangers
+        if (songSearchQuery.getArrangersIds().size() > 0) {
+            criteriaFilters.addAll(buildArrayMatchCriteria("arrangers", songSearchQuery.getArrangersIds()));
+        }
+        // by orchestrators
+        if (songSearchQuery.getOrchestratorsIds().size() > 0) {
+            criteriaFilters.addAll(buildArrayMatchCriteria("orchestrators", songSearchQuery.getOrchestratorsIds()));
         }
 
         // build result search criteria
