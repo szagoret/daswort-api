@@ -19,13 +19,13 @@ public class TopicService {
 
     public UpdateResult removeTopic(String id) {
         if (!ObjectId.isValid(id)) {
-            return UpdateResult.error();
+            return UpdateResult.error(UpdateErrorMessage.INVALID_OBJECT_ID);
         }
         final var hasReferences = topicRepository.findById(id)
                 .map(songService::isReferencedBy)
                 .orElse(false);
         if (hasReferences) {
-            return UpdateResult.error();
+            return UpdateResult.error(UpdateErrorMessage.REFERENCE_CONSTRAINT_ERROR);
         } else {
             topicRepository.deleteById(id);
             return UpdateResult.success();

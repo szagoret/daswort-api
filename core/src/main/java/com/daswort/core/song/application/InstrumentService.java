@@ -19,13 +19,13 @@ public class InstrumentService {
 
     public UpdateResult removeInstrument(String id) {
         if (!ObjectId.isValid(id)) {
-            return UpdateResult.error();
+            return UpdateResult.error(UpdateErrorMessage.INVALID_OBJECT_ID);
         }
         final var hasReferences = instrumentRepository.findById(id)
                 .map(songService::isReferencedBy)
                 .orElse(false);
         if (hasReferences) {
-            return UpdateResult.error();
+            return UpdateResult.error(UpdateErrorMessage.REFERENCE_CONSTRAINT_ERROR);
         } else {
             instrumentRepository.deleteById(id);
             return UpdateResult.success();
