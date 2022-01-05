@@ -1,13 +1,12 @@
 spring:
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/daswort}
+      uri: ${MONGODB_URI}
       auto-index-creation: true
 
 
 daswort:
   aws:
     s3:
-      bucket: ${BUCKET_NAME:daswort-files}
+      bucket: ${BUCKET_NAME}
       region: eu-central-1
-      endpoint: http://localhost:5001
