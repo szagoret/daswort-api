@@ -3,6 +3,7 @@ package com.daswort.core.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,10 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and();
         http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/song/**").permitAll()
                 .antMatchers("/public/**").permitAll()
                 .anyRequest().authenticated();
-        http
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, ex) -> response.sendError(
                         HttpServletResponse.SC_UNAUTHORIZED,
