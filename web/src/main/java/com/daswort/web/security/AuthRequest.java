@@ -1,4 +1,4 @@
-package com.daswort.core.security;
+package com.daswort.web.security;
 
 import lombok.Data;
 

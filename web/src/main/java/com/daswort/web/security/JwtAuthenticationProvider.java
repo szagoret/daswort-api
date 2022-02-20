@@ -1,4 +1,4 @@
-package com.daswort.core.security;
+package com.daswort.web.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
