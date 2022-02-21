@@ -10,4 +10,5 @@ import java.time.Instant;
 public class AuthResponse {
     String jwt;
     Instant expiration;
+    String username;
 }

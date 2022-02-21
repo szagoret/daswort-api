@@ -1,14 +1,21 @@
 package com.daswort.web.common;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-@Value
-@Builder
+@Getter
+@NoArgsConstructor
 public class IdTitleDto {
-    String id;
+    private String id;
     @NotNull
-    String title;
+    private String title;
+
+    @Builder
+    public IdTitleDto(String id, String title) {
+        this.id = id;
+        this.title = title;
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class SongController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveSong(@RequestBody SongDto songDto) {
+    public ResponseEntity<?> saveSong(@RequestBody @Valid SongDto songDto) {
         return ResponseEntity.of(toSongDto(songService.saveSong(SaveSongCommandMapper.toSaveSongCommand(songDto))));
     }
 

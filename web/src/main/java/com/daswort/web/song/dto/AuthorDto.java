@@ -1,11 +1,18 @@
 package com.daswort.web.song.dto;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Value
-@Builder
+@Getter
+@NoArgsConstructor
 public class AuthorDto {
-    String id;
-    String name;
+    private String id;
+    private String name;
+
+    @Builder
+    public AuthorDto(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

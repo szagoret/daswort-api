@@ -64,7 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://noav.vercel.app");
+                .allowedOrigins("https://noav.vercel.app")
+                .allowedOrigins("http://localhost:3000");
     }
 
 

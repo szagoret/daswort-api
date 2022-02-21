@@ -23,6 +23,7 @@ public class JwtTokenUtil {
             final var tokenResponse = AuthResponse.builder()
                     .jwt(issuedJwt.getValue())
                     .expiration(issuedJwt.getExpiration())
+                    .username(username)
                     .build();
             return Optional.of(tokenResponse);
         }
