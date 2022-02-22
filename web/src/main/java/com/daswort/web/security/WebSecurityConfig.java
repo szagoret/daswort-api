@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .and();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/song/**").permitAll()
-                .antMatchers("/public/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/public/login").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
