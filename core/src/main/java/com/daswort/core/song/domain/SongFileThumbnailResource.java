@@ -1,4 +1,4 @@
-package com.daswort.core.song.application;
+package com.daswort.core.song.domain;
 
 import com.daswort.core.song.domain.Thumbnail;
 import com.daswort.core.storage.EntityFileResource;

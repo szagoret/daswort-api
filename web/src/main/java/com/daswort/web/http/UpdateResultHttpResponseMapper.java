@@ -1,6 +1,6 @@
 package com.daswort.web.http;
 
-import com.daswort.core.song.application.UpdateResult;
+import com.daswort.core.song.domain.UpdateResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

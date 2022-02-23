@@ -40,7 +40,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
-                .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+                .configurationSource(request -> {
+                    final var corsConfig =  new CorsConfiguration().applyPermitDefaultValues();
+                    corsConfig.addAllowedMethod(HttpMethod.PUT);
+                    corsConfig.addAllowedMethod(HttpMethod.DELETE);
+                    return corsConfig;
+                })
                 .and()
                 .csrf()
                 .disable()

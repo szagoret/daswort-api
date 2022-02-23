@@ -1,4 +1,4 @@
-package com.daswort.core.song.application;
+package com.daswort.core.song.domain;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

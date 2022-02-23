@@ -1,4 +1,4 @@
-package com.daswort.core.song.application;
+package com.daswort.core.song.domain;
 
 public final class UpdateErrorMessage {
     public static final String REFERENCE_CONSTRAINT_ERROR = "reference_constraint_error";

@@ -1,12 +1,12 @@
-package com.daswort.core.song.application;
+package com.daswort.core.song.domain;
 
 import com.daswort.core.common.entity.SequenceGenerator;
 import com.daswort.core.image.transform.ImageTransformationType;
 import com.daswort.core.service.storage.FileStorageService;
 import com.daswort.core.service.storage.SongFilePathBuilder;
 import com.daswort.core.service.storage.SongFilePathResolver;
-import com.daswort.core.song.domain.SongFile;
-import com.daswort.core.song.domain.Thumbnail;
+import com.daswort.core.song.application.SongFileThumbnailService;
+import com.daswort.core.song.application.ThumbnailCodeBuilder;
 import com.daswort.core.song.query.SongFileQuery;
 import com.daswort.core.song.repository.SongFileRepository;
 import com.daswort.core.song.repository.SongFileThumbnailRepository;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -89,19 +90,22 @@ public class SongFileService {
     public void createFileThumbnail(SongFileQuery query, ImageTransformationType... imageTransformationTypes) {
         getSongFileResource(query).ifPresent(songFileResource -> {
             for (var transformationType : imageTransformationTypes) {
-                final var fileResource = songFileThumbnailService.createFileThumbnail(songFileResource, transformationType);
-                final var thumbnailCode = ThumbnailCodeBuilder.build(query.fileCode(), transformationType.name().toLowerCase(), 0, transformationType.getImageTransformer().getFileFormat());
+                final var fileResources = songFileThumbnailService.createFileThumbnails(songFileResource, transformationType);
+                IntStream.range(0, fileResources.size()).forEach(index -> {
+                    final var thumbnailCode = ThumbnailCodeBuilder.build(query.fileCode(), transformationType.name().toLowerCase(), index, transformationType.getImageTransformer().getFileFormat());
+                    final var fileResource = fileResources.get(index);
+                    final var thumbnail = Thumbnail.builder()
+                            .code(thumbnailCode)
+                            .type(transformationType.name())
+                            .size(fileResource.getContentLength())
+                            .extension(transformationType.getImageTransformer().getFileFormat().name())
+                            .sequence(index)
+                            .build();
+                    final var thumbnailPath = SongFilePathBuilder.build(query.songCode(), query.fileCode(), thumbnailCode);
 
-                final var thumbnail = Thumbnail.builder()
-                        .code(thumbnailCode)
-                        .type(transformationType.name())
-                        .size(fileResource.getContentLength())
-                        .extension(transformationType.getImageTransformer().getFileFormat().name())
-                        .build();
-                final var thumbnailPath = SongFilePathBuilder.build(query.songCode(), query.fileCode(), thumbnailCode);
-
-                songFileThumbnailRepository.save(query.songCode(), query.fileCode(), thumbnail)
-                        .ifPresent(t -> fileStorageService.put(thumbnailPath, fileResource));
+                    songFileThumbnailRepository.save(query.songCode(), query.fileCode(), thumbnail)
+                            .ifPresent(t -> fileStorageService.put(thumbnailPath, fileResource));
+                });
             }
         });
     }

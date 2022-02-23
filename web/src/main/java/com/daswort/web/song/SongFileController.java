@@ -1,7 +1,7 @@
 package com.daswort.web.song;
 
-import com.daswort.core.song.application.SongFileService;
 import com.daswort.core.song.domain.SongFile;
+import com.daswort.core.song.domain.SongFileService;
 import com.daswort.core.song.query.SongFileQuery;
 import com.daswort.core.storage.FileResourceBytes;
 import com.daswort.web.http.HttpFileResponseType;
@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import static com.daswort.core.image.transform.ImageTransformationType.LG;
-import static com.daswort.core.image.transform.ImageTransformationType.SM;
 
 
 @RestController
@@ -65,7 +64,7 @@ public class SongFileController {
 
     @PostMapping("{fileCode}/thumbs")
     public ResponseEntity<?> createSongFileThumbnails(@PathVariable String songCode, @PathVariable String fileCode) {
-        songFileService.createFileThumbnail(new SongFileQuery(songCode, fileCode), SM, LG);
+        songFileService.createFileThumbnail(new SongFileQuery(songCode, fileCode), LG);
         return ResponseEntity.ok().build();
     }
 

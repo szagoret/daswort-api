@@ -16,6 +16,4 @@ public class ImageRenderCommand {
     String extension;
     @NonNull
     ImageTransformationType transformationType;
-    @Builder.Default
-    Integer pageIndex = 0;
 }
