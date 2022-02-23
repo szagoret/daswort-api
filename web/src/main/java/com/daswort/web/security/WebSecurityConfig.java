@@ -17,18 +17,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
 
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableWebMvc
 @RequiredArgsConstructor
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtManager jwtManager;
     private final UserDetailsService userDetailsService;
 
@@ -43,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
+                .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
                 .and()
                 .csrf()
                 .disable()
@@ -60,14 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                         ex.getMessage()
                 ));
     }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("https://noav.vercel.app")
-                .allowedOrigins("http://localhost:3000");
-    }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
